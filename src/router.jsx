@@ -39,6 +39,7 @@ export const ROUTE_CONFIG = {
     element: <Login />,
   },
 
+  // User dashboard routes
   DASHBOARD: {
     path: "/dashboard",
     name: "Dashboard Page",

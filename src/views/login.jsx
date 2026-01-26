@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Footer from "../components/footer";
 import Header from "../components/header";
+import LoginForm from "../components/auth/loginForm";
+import RegisterForm from "../components/auth/registerForm";
 
 export default function Login() {
   const [activeTab, setActiveTab] = useState("login");
@@ -97,118 +99,9 @@ export default function Login() {
 
             {/* Tab Content */}
             <div className="tab-content">
-              {activeTab === "login" && (
-                <div className="form-column col-lg-6 col-md-12 col-sm-12 mx-auto">
-                  <h3>Login</h3>
-                  <div className="inner-column">
-                    <div className="default-form style-two">
-                      <form method="post" action="blog.html">
-                        <div className="form-group">
-                          <label>Username or Email Address*</label>
-                          <input type="text" name="email" autoComplete="off" />
-                        </div>
-                        <div className="form-group">
-                          <label>Password*</label>
-                          <input
-                            type="password"
-                            name="password"
-                            autoComplete="off"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <div className="check-box">
-                            <input
-                              type="checkbox"
-                              name="remember-password"
-                              id="type-1"
-                            />
-                            <label htmlFor="type-1">Remember me</label>
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <button
-                            type="submit"
-                            className="theme-btn btn-style-four w-100"
-                          >
-                            <span className="btn-wrap">
-                              <span className="text-one">
-                                Log in{" "}
-                                <i className="fas fa-arrow-right fa-fw" />
-                              </span>
-                              <span className="text-two">
-                                Log in{" "}
-                                <i className="fas fa-arrow-right fa-fw" />
-                              </span>
-                            </span>
-                          </button>
-                        </div>
-                        <div className="form-group text-center">
-                          <a href="#" className="forgot">
-                            Lost your password?
-                          </a>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {activeTab === "login" && <LoginForm />}
 
-              {activeTab === "register" && (
-                <div className="form-column col-lg-6 col-md-12 col-sm-12 mx-auto">
-                  <h3>Register</h3>
-                  <div className="inner-column">
-                    <div className="default-form style-two">
-                      <form method="post" action="blog.html">
-                        <div className="form-group">
-                          <label>Username*</label>
-                          <input
-                            type="text"
-                            name="username"
-                            autoComplete="off"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>Email address*</label>
-                          <input type="email" name="email" autoComplete="off" />
-                        </div>
-                        <div className="form-group">
-                          <label>Password*</label>
-                          <input
-                            type="password"
-                            name="password"
-                            autoComplete="off"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <div className="text">
-                            Your personal data will be used to support your
-                            experience throughout this website, to manage access
-                            to your account, and for other purposes described in
-                            our <a href="privacy.html">privacy policy.</a>
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <button
-                            type="submit"
-                            className="theme-btn btn-style-four w-100"
-                          >
-                            <span className="btn-wrap">
-                              <span className="text-one">
-                                Register{" "}
-                                <i className="fas fa-arrow-right fa-fw" />
-                              </span>
-                              <span className="text-two">
-                                Register{" "}
-                                <i className="fas fa-arrow-right fa-fw" />
-                              </span>
-                            </span>
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {activeTab === "register" && <RegisterForm />}
             </div>
           </div>
         </section>
