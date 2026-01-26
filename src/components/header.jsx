@@ -1,4 +1,10 @@
+import { useContext } from "react";
+import { AuthContext } from "../auth/AuthContext";
+
 export default function Header() {
+
+  const { user } = useContext(AuthContext);
+
   return (
     <>
       <header className="main-header header-style-one">
@@ -49,7 +55,11 @@ export default function Header() {
                         <a href="/#benefits">benefits</a>
                       </li>
                       <li>
-                        <a href="/login">login</a>
+                        {user ? (
+                          <a href="/dashboard"><i className="fas fa-user me-2"></i> Dashboard</a>
+                        ) : (
+                          <a href="/login">Login / Register</a>
+                        )}
                       </li>
                     </ul>
                   </div>

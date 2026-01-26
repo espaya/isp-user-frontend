@@ -8,6 +8,7 @@ import MyPackage from "./views/dashboard/MyPackage";
 import Payments from "./views/dashboard/Payments";
 import Support from "./views/dashboard/Support";
 import Account from "./views/dashboard/Account";
+import ProtectedRoute from "./auth/ProtectedRoute";
 
 export const ROUTE_CONFIG = {
   LANDING: {
@@ -43,8 +44,8 @@ export const ROUTE_CONFIG = {
   DASHBOARD: {
     path: "/dashboard",
     name: "Dashboard Page",
-    isProtected: false,
-    element: <DashboardLayout />,
+    isProtected: true, // use this flag
+    element: <DashboardLayout />, // NO ProtectedRoute here
     children: [
       { index: true, element: <DashboardHome /> },
       { path: "package", element: <MyPackage /> },

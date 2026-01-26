@@ -1,11 +1,14 @@
 import { useContext } from "react";
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "../auth/AuthContext";
 import { Navigate } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
-const GuestRoute = ({ children }) => {
-  const { user } = useContext(AuthContext);
-  if (user) return <Navigate to="/dashboard" />;
+export default function GuestRoute({ children }) {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) return <Spinner />; // Wait until user is fetched
+
+  if (user) return <Navigate to="/dashboard" replace />;
+
   return children;
-};
-
-export default GuestRoute;
+}

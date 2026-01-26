@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
   const apiBase = import.meta.env.VITE_API_URL;
+  const { fetchUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -31,12 +35,21 @@ export default function LoginForm() {
         credentials: "include",
       });
 
+      const getXsrfToken = () => {
+        const match = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("XSRF-TOKEN="));
+
+        return match ? decodeURIComponent(match.split("=")[1]) : "";
+      };
+
       // Login request
       const response = await fetch(`${apiBase}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          "X-XSRF-TOKEN": getXsrfToken(),
         },
         credentials: "include", // ✅ Important for Sanctum
         body: JSON.stringify(formData),
@@ -49,8 +62,10 @@ export default function LoginForm() {
         return;
       }
 
+      await fetchUser(); // Refresh user data after login
+
       // Redirect on success
-      window.location.href = data.redirect_url || "/";
+      navigate(data.redirect_url || "/", { replace: true });
     } catch (err) {
       setError({ general: "An error occurred. Please try again." });
     } finally {
@@ -88,7 +103,7 @@ export default function LoginForm() {
                 <label>Password*</label>
                 <input
                   value={formData.password}
-                  type={showPassword ? "text" : "password"} // ✅ toggle
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   autoComplete="off"
                   onChange={handleChange}
@@ -102,7 +117,9 @@ export default function LoginForm() {
                     cursor: "pointer",
                   }}
                 >
-                  {showPassword ? "👁️" : "🙈"}
+                  <i
+                    className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
+                  ></i>
                 </span>
                 {error.password && (
                   <small className="text-danger">{error.password[0]}</small>
@@ -130,11 +147,11 @@ export default function LoginForm() {
                 >
                   <span className="btn-wrap">
                     <span className="text-one">
-                      {loading ? "Logging in..." : "Log in"}{" "}
+                      {loading ? "Logging in..." : "Log in"}
                       <i className="fas fa-arrow-right fa-fw" />
                     </span>
                     <span className="text-two">
-                      {loading ? "Logging in..." : "Log in"}{" "}
+                      {loading ? "Logging in..." : "Log in"}
                       <i className="fas fa-arrow-right fa-fw" />
                     </span>
                   </span>

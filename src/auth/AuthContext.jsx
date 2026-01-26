@@ -9,16 +9,16 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch(`${apiBase}/api/me`, {
+      const res = await fetch(`${apiBase}/api/user`, {
         credentials: "include",
       });
 
       if (res.ok) {
         const data = await res.json();
-        setUser(data);
-        return;
+        setUser(data.user);
+      } else {
+        setUser(null);
       }
-      setUser(null);
     } catch {
       setUser(null);
     } finally {

@@ -1,16 +1,32 @@
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
+import useLogout from "../components/auth/logout";
+import { useContext } from "react";
+import { AuthContext } from "../auth/AuthContext";
 
 export default function DashboardLayout() {
   const location = useLocation(); // get current path
+  const logout = useLogout();
+  const { user } = useContext(AuthContext);
 
   const menuItems = [
     { path: "/dashboard", label: "Dashboard", icon: "fas fa-home" },
-    { path: "/dashboard/package", label: "My Package", icon: "fas fa-wifi text-success" },
-    { path: "/dashboard/payments", label: "Payments", icon: "fas fa-history text-warning" },
-    { path: "/dashboard/account", label: "Account", icon: "fas fa-user text-primary" },
-    { path: "/logout", label: "Logout", icon: "fas fa-sign-out-alt text-danger" },
+    {
+      path: "/dashboard/package",
+      label: "My Package",
+      icon: "fas fa-wifi text-success",
+    },
+    {
+      path: "/dashboard/payments",
+      label: "Payments",
+      icon: "fas fa-history text-warning",
+    },
+    {
+      path: "/dashboard/account",
+      label: "Account",
+      icon: "fas fa-user text-primary",
+    },
   ];
 
   return (
@@ -49,7 +65,7 @@ export default function DashboardLayout() {
                     className="rounded-circle mb-2"
                     style={{ width: 90, height: 90 }}
                   />
-                  <h5>John Doe</h5>
+                  <h5> { user && user ? user?.name : "Guest" } </h5>
                   <small className="text-muted">+233 55 000 0000</small>
                   <div className="mt-2">
                     <span className="badge bg-success">
@@ -64,7 +80,9 @@ export default function DashboardLayout() {
                     <li
                       key={item.path}
                       className={`list-group-item ${
-                        location.pathname === item.path ? "active bg-primary text-white" : ""
+                        location.pathname === item.path
+                          ? "active bg-primary text-white"
+                          : ""
                       }`}
                     >
                       <NavLink
@@ -76,6 +94,15 @@ export default function DashboardLayout() {
                       </NavLink>
                     </li>
                   ))}
+                  <li className="list-group-item decoration-none">
+                    <button
+                      className="d-flex align-items-center btn btn-link text-start w-100 p-0"
+                      onClick={logout}
+                    >
+                      <i className="fas fa-sign-out-alt text-danger me-2"></i>
+                      Logout
+                    </button>
+                  </li>
                 </ul>
               </div>
             </div>
