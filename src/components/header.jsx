@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
+import { Link, NavLink } from "react-router-dom";
+
 
 export default function Header() {
-
   const { user } = useContext(AuthContext);
 
   return (
@@ -14,9 +15,9 @@ export default function Header() {
               {/* Logo Box */}
               <div className="logo-box d-flex align-items-center">
                 <div className="logo">
-                  <a href="index.html">
+                  <Link to="/">
                     <img src="images/logo.png" alt="" title="" />
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="nav-outer d-flex align-items-center">
@@ -43,22 +44,64 @@ export default function Header() {
                   >
                     <ul className="navigation clearfix">
                       <li className="current">
-                        <a href="/#home">Home</a>
+                        <NavLink
+                          to="/#home"
+                          className={({ isActive }) =>
+                            isActive ? "active" : ""
+                          }
+                        >
+                          Home
+                        </NavLink>
                       </li>
                       <li>
-                        <a href="/#about">About us</a>
+                        <NavLink
+                          to="/#about"
+                          className={({ isActive }) =>
+                            isActive ? "active" : ""
+                          }
+                        >
+                          About us
+                        </NavLink>
                       </li>
                       <li>
-                        <a href="/#price">price</a>
+                        <NavLink
+                          to="/#price"
+                          className={({ isActive }) =>
+                            isActive ? "active" : ""
+                          }
+                        >
+                          Price
+                        </NavLink>
                       </li>
                       <li>
-                        <a href="/#benefits">benefits</a>
+                        <NavLink
+                          to="/#benefits"
+                          className={({ isActive }) =>
+                            isActive ? "active" : ""
+                          }
+                        >
+                          Benefits
+                        </NavLink>
                       </li>
                       <li>
                         {user ? (
-                          <a href="/dashboard"><i className="fas fa-user me-2"></i> Dashboard</a>
+                          <NavLink
+                            to="/dashboard"
+                            className={({ isActive }) =>
+                              isActive ? "active" : ""
+                            }
+                          >
+                            <i className="fas fa-user me-2"></i> Dashboard
+                          </NavLink>
                         ) : (
-                          <a href="/login">Login / Register</a>
+                          <NavLink
+                            to="/login"
+                            className={({ isActive }) =>
+                              isActive ? "active" : ""
+                            }
+                          >
+                            Login / Register
+                          </NavLink>
                         )}
                       </li>
                     </ul>
@@ -95,9 +138,9 @@ export default function Header() {
           </div>
           <nav className="menu-box">
             <div className="nav-logo">
-              <a href="index.html">
+              <Link to="/">
                 <img src="images/logo.png" alt="" title="" />
-              </a>
+              </Link>
             </div>
             {/* Search */}
             <div className="menu-outer">

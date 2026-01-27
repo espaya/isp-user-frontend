@@ -10,6 +10,8 @@ export default function DashboardLayout() {
   const logout = useLogout();
   const { user } = useContext(AuthContext);
 
+  document.title = "Dashboard - ISP Automated Payment System";
+
   const menuItems = [
     { path: "/dashboard", label: "Dashboard", icon: "fas fa-home" },
     {
@@ -65,7 +67,7 @@ export default function DashboardLayout() {
                     className="rounded-circle mb-2"
                     style={{ width: 90, height: 90 }}
                   />
-                  <h5> { user && user ? user?.name : "Guest" } </h5>
+                  <h5> {user && user ? user?.name : "Guest"} </h5>
                   <small className="text-muted">+233 55 000 0000</small>
                   <div className="mt-2">
                     <span className="badge bg-success">
@@ -98,6 +100,7 @@ export default function DashboardLayout() {
                     <button
                       className="d-flex align-items-center btn btn-link text-start w-100 p-0"
                       onClick={logout}
+                      style={{ textDecoration: "none" }} // ✅ removes underline
                     >
                       <i className="fas fa-sign-out-alt text-danger me-2"></i>
                       Logout

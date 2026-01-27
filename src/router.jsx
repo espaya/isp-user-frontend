@@ -16,9 +16,7 @@ export const ROUTE_CONFIG = {
     name: "Landing Page",
     isProtected: false,
     element: (
-      <GuestRoute>
         <Landing />
-      </GuestRoute>
     ),
   },
 
