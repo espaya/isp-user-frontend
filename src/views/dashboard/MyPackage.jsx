@@ -1,174 +1,185 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import fetchPackages from "../../controllers/FetchPackages";
+import Cookies from "js-cookie";
+import Swal from "sweetalert2";
+import { AuthContext } from "../../auth/AuthContext";
+import PaymentModal from "../../components/user/PaymentModal";
+import handlePaymentSuccess from "../../controllers/HandlePayment";
+import CurrentPackageCard from "../../components/user/CurrentPackageCard";
 
 export default function MyPackage() {
-  const [currentPackage, setCurrentPackage] = useState({
-    name: "Daily 10gh",
-    speed: "10 Mbps",
-    devices: 1,
-    expires: "Today 11:59 PM",
-    price: "10gh",
-  });
+  const [currentPackage, setCurrentPackage] = useState(null);
+  const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const apiBase = import.meta.env.VITE_API_URL;
+  const [pagination, setPagination] = useState({});
+  const { user } = useContext(AuthContext);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
-  const packages = [
-    { name: "Daily 10gh", speed: "10 Mbps", price: "10gh", devices: 1 },
-    { name: "Daily 15gh", speed: "15 Mbps", price: "15gh", devices: 1 },
-    { name: "Weekly 60gh", speed: "20 Mbps", price: "60gh", devices: 2 },
-    { name: "Weekly 80gh", speed: "25 Mbps", price: "80gh", devices: 2 },
-    { name: "Monthly 130gh", speed: "30 Mbps", price: "130gh", devices: 3 },
-    { name: "Monthly 150gh", speed: "35 Mbps", price: "150gh", devices: 3 },
-    {
-      name: "Special Offer 200gh",
-      speed: "50 Mbps",
-      price: "200gh",
-      devices: 5,
-    },
-  ];
+  const handleSubscribe = async (pkg) => {
+    setErrors({});
 
-  const colors = [
-    "bg-info text-white",
-    "bg-success text-white",
-    "bg-warning text-dark",
-    "bg-danger text-white",
-    "bg-primary text-white",
-    "bg-secondary text-white",
-    "bg-dark text-white",
-  ];
-
-  const handleSubscribe = (pkg) => {
-    setCurrentPackage({
-      ...pkg,
-      expires: pkg.name.includes("Daily")
-        ? "Today 11:59 PM"
-        : pkg.name.includes("Weekly")
-          ? "This Week"
-          : pkg.name.includes("Monthly")
-            ? "This Month"
-            : "Unlimited",
+    const confirm = await Swal.fire({
+      icon: "question",
+      title: "Action Required",
+      text: "Proceed to payment for this package?",
+      showCancelButton: true,
+      confirmButtonText: "Continue",
+      confirmButtonColor: "green",
     });
-    alert(`You have subscribed to ${pkg.name}`);
+
+    if (!confirm.isConfirmed) return;
+
+    // 🔥 Let SweetAlert fully close first
+    Swal.close();
+
+    // 🔥 Small delay to release backdrop & focus trap
+    setTimeout(() => {
+      setSelectedPackage(pkg);
+      setShowPaymentModal(true);
+    }, 150);
   };
 
-  const handleCancel = () => {
-    alert(`You have canceled ${currentPackage.name}`);
-    setCurrentPackage({}); // clear the current package
-  };
+  const handleCancel = () => setCurrentPackage(null);
 
   const getUpgradeDowngradeLabel = (pkg) => {
-    const currentPrice = parseInt(currentPackage.price);
-    const pkgPrice = parseInt(pkg.price);
+    if (!currentPackage) return "Upgrade";
+
+    const currentPrice = parseInt(currentPackage.price || "0", 10);
+    const pkgPrice = parseInt(pkg.price, 10);
+
     if (pkgPrice > currentPrice) return "Upgrade";
     if (pkgPrice < currentPrice) return "Downgrade";
-    return "Current Plan";
+    return "Current";
   };
 
-  return (
-    <div>
-      {/* CURRENT PACKAGE */}
-      {currentPackage.name && (
-        <div className="order-box mb-4">
-          <h4>
-            <i className="fas fa-box text-info" /> Current Package
-          </h4>
-          <ul className="order-totals">
-            <li>
-              Package <span>{currentPackage.name}</span>
-            </li>
-            <li>
-              Speed <span>{currentPackage.speed}</span>
-            </li>
-            <li>
-              Devices <span>{currentPackage.devices}</span>
-            </li>
-            <li>
-              Expires <span>{currentPackage.expires}</span>
-            </li>
-            <li>
-              Price <span>{currentPackage.price}</span>
-            </li>
-          </ul>
+  useEffect(() => {
+    fetchPackages(setLoading, setErrors, apiBase, setPackages, setPagination);
+  }, []);
 
-          {/* Cancel button */}
-          <button
-            className="theme-btn btn-style-one w-100 mt-2 text-dark"
-            onClick={handleCancel}
-          >
-            <i className="fas fa-times me-1" />
-            Cancel Package
-          </button>
+  return (
+    <div className="container-fluid">
+      {loading && (
+        <div className="text-center py-4">
+          <div className="spinner-border text-primary" />
         </div>
       )}
 
-      {/* AVAILABLE PACKAGES */}
-      <div className="order-box">
-        <h4>
-          <i className="fas fa-list text-primary" /> Available Packages
-        </h4>
-        <div className="row">
-          {packages.map((pkg, index) => {
-            const actionLabel = getUpgradeDowngradeLabel(pkg);
-            const isCurrent = actionLabel === "Current Plan";
+      {/* CURRENT PACKAGE */}
+      {currentPackage && currentPackage.name && (
+        <CurrentPackageCard
+          currentPackage={currentPackage}
+          handleCancel={handleCancel}
+          setCurrentPackage={setCurrentPackage}
+        />
+      )}
 
-            return (
-              <div className="col-lg-6 col-md-12 mb-3" key={pkg.name}>
-                <div
-                  className={`p-3 border rounded shadow-sm position-relative ${
-                    isCurrent
-                      ? "bg-primary text-white"
-                      : colors[index % colors.length]
-                  }`}
-                >
-                  {isCurrent ? (
-                    <span
-                      className="badge bg-light text-primary position-absolute top-0 end-0 m-2"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      Current
-                    </span>
-                  ) : (
-                    <span
-                      className={`badge ${
-                        actionLabel === "Upgrade"
+      {/* AVAILABLE PACKAGES */}
+      <h5 className="fw-semibold mb-4">
+        <i className="fas fa-layer-group text-primary me-2" />
+        Available Packages
+      </h5>
+
+      {errors.general && (
+        <p className="alert alert-danger text-center"> {errors.general} </p>
+      )}
+
+      <div className="row g-4">
+        {packages.map((pkg) => {
+          const actionLabel = getUpgradeDowngradeLabel(pkg);
+          const isCurrent = actionLabel === "Current";
+
+          return (
+            <div className="col-lg-6" key={pkg.id}>
+              <div className="card border-0 rounded-4 shadow-sm h-100">
+                <div className="card-body d-flex flex-column">
+                  <span
+                    className={`badge align-self-end mb-2 ${
+                      isCurrent
+                        ? "bg-primary"
+                        : actionLabel === "Upgrade"
                           ? "bg-success"
                           : "bg-warning text-dark"
-                      } position-absolute top-0 end-0 m-2`}
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      {actionLabel}
-                    </span>
-                  )}
+                    }`}
+                  >
+                    {isCurrent ? "Current Plan" : actionLabel}
+                  </span>
 
-                  <h5>{pkg.name}</h5>
-                  <ul className="order-totals">
+                  <h6 className="fw-semibold">{pkg.name}</h6>
+                  <div className="fs-3 fw-bold mb-3">
+                    GHS {parseInt(pkg.price, 10)}
+                  </div>
+
+                  <ul className="list-unstyled small mb-4">
                     <li>
-                      Speed <span>{pkg.speed}</span>
+                      <i className="fas fa-tachometer-alt me-2 text-info" />{" "}
+                      {pkg.speed}
                     </li>
                     <li>
-                      Devices <span>{pkg.devices}</span>
-                    </li>
-                    <li>
-                      Price <span>{pkg.price}</span>
+                      <i className="fas fa-users me-2 text-success" />{" "}
+                      {pkg.devices} device(s)
                     </li>
                   </ul>
 
                   {!isCurrent && (
                     <button
-                      className={`theme-btn pay-btn w-100 mt-2 ${
-                        actionLabel === "Upgrade"
-                          ? "text-white"
-                          : "text-dark btn-style-four"
-                      }`}
+                      className={`btn mt-auto ${actionLabel === "Upgrade" ? "btn-success" : "btn-outline-warning"}`}
                       onClick={() => handleSubscribe(pkg)}
                     >
-                      <i className="fas fa-arrow-up me-1" />
                       {actionLabel}
                     </button>
                   )}
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
+
+      <PaymentModal
+        show={showPaymentModal}
+        pkg={selectedPackage}
+        paymentLoading={paymentLoading}
+        onClose={() => {
+          setShowPaymentModal(false);
+          setSelectedPackage(null);
+        }}
+        onConfirm={(paymentData) =>
+          handlePaymentSuccess(
+            paymentData,
+            {
+              setLoading,
+              setErrors,
+              setCurrentPackage,
+              setShowPaymentModal,
+              setSelectedPackage,
+              Swal,
+            },
+            { user, selectedPackage, apiBase },
+          )
+        }
+      />
+
+      {/* PAGINATION (DISPLAY ONLY) */}
+      {pagination.last_page > 1 && (
+        <nav className="mt-5 d-flex justify-content-center">
+          <ul className="pagination">
+            {Array.from({ length: pagination.last_page }, (_, i) => (
+              <li
+                key={i}
+                className={`page-item ${pagination.current_page === i + 1 ? "active" : ""}`}
+              >
+                <button className="page-link" disabled>
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </div>
   );
 }
