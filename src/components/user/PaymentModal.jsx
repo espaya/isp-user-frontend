@@ -4,7 +4,7 @@ import { CreditCard, Shield } from "lucide-react";
 import renderProgressBar from "./ProgressBar";
 import renderMethodSelection from "./MethodSelection";
 import renderDetailsForm from "./RenderDetailsForm";
-import renderReview from "./RenderReview";
+import RenderReview from "./RenderReview";
 
 export default function PaymentModal({
   show,
@@ -24,6 +24,7 @@ export default function PaymentModal({
     name: "",
     email: "",
     provider: "",
+    payment_method: ""
   });
 
   if (!show || !pkg) return null;
@@ -46,10 +47,9 @@ export default function PaymentModal({
       card_number: details.cardNumber,
       expiry: details.expiry,
       cvv: details.cvv,
-      provider: details.provider
+      provider: details.provider,
     });
   };
-
 
   const getButtonText = () => {
     if (paymentLoading)
@@ -110,7 +110,9 @@ export default function PaymentModal({
               {step === 1 && renderMethodSelection(pkg, method, setMethod)}
               {step === 2 &&
                 renderDetailsForm(method, details, setDetails, errors)}
-              {step === 3 && renderReview(details, pkg, method)}
+              {step === 3 && (
+                <RenderReview details={details} pkg={pkg} method={method} />
+              )}
             </div>
 
             <div className="modal-footer bg-light px-4 py-3 d-flex justify-content-between">

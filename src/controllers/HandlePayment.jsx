@@ -36,7 +36,7 @@ const handlePaymentSuccess = async (
         card_number,
         expiry,
         cvv,
-        provider
+        provider,
       }),
     });
 
@@ -47,19 +47,15 @@ const handlePaymentSuccess = async (
 
     // 2️⃣ Open Paystack Checkout for card payments
     if (payment_method === "card") {
-      const handler = window.PaystackPop.setup({
-        key: initData.public_key,
-        email: user.email,
-        amount: initData.amount,
-        ref: initData.reference,
-        callback: async function (response) {
-          await verifyPayment(response.reference);
-        },
-        onClose: function () {
-          Swal.fire("Cancelled", "Payment was cancelled", "info");
-        },
-      });
-      handler.openIframe();
+      if (payment_method === "card") {
+        if (!initData.authorization_url) {
+          throw new Error("Paystack authorization URL missing");
+        }
+
+        // Redirect user to Paystack
+        window.location.href = initData.authorization_url;
+        return;
+      }
     } else {
       // For Mobile Money (MTN/Telecel) just verify the payment
       await verifyPayment(initData.reference);
