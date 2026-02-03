@@ -9,15 +9,14 @@ import Payments from "./views/dashboard/Payments";
 import Support from "./views/dashboard/Support";
 import Account from "./views/dashboard/Account";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import ShowSubscriptionDetails from "./views/dashboard/ShowSubScriptionDetails";
 
 export const ROUTE_CONFIG = {
   LANDING: {
     path: "/",
     name: "Landing Page",
     isProtected: false,
-    element: (
-        <Landing />
-    ),
+    element: <Landing />,
   },
 
   LOGIN: {
@@ -50,6 +49,7 @@ export const ROUTE_CONFIG = {
       { path: "payments", element: <Payments /> },
       { path: "support", element: <Support /> },
       { path: "account", element: <Account /> },
+      { path: "payment/success/:reference", element: <ShowSubscriptionDetails /> },
     ],
   },
 };
