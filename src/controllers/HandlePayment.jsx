@@ -53,6 +53,7 @@ const handlePaymentSuccess = async (
         }
 
         // Redirect user to Paystack
+        // window.location.href = `/payment/success/${reference}/${reference}`;
         window.location.href = initData.authorization_url;
         return;
       }
@@ -75,13 +76,6 @@ const handlePaymentSuccess = async (
       if (!verifyRes.ok)
         throw new Error(data.message || "Payment verification failed");
 
-      Swal.fire({
-        icon: "success",
-        title: "Subscription Successful",
-        text: "Package Subscribed Successfully",
-        showCloseButton: true,
-      });
-
       setCurrentPackage({
         ...selectedPackage,
         expires: selectedPackage.name.includes("Daily")
@@ -95,6 +89,15 @@ const handlePaymentSuccess = async (
 
       setShowPaymentModal(false);
       setSelectedPackage(null);
+
+      Swal.fire({
+        icon: "success",
+        title: "Subscription Successful",
+        text: "Package Subscribed Successfully",
+        showCloseButton: true,
+      }).then(() => {
+        window.location.href = `/payment/success/${reference}/${reference}`;
+      });
     }
   } catch (err) {
     Swal.fire("Error", err.message, "error");
