@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../components/footer";
 import Header from "../components/header";
 import LoginForm from "../components/auth/loginForm";
@@ -6,6 +6,25 @@ import RegisterForm from "../components/auth/registerForm";
 
 export default function Login() {
   const [activeTab, setActiveTab] = useState("login");
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    const ip = params.get("ip");
+    const mac = params.get("mac");
+
+    if (!ip || !mac) {
+      window.location.replace("http://hotspot.local/login");
+      return;
+    }
+
+    // Force HTTP if browser landed on HTTPS
+    if (window.location.protocol === "https:") {
+      window.location.replace(window.location.href.replace("https:", "http:"));
+      return;
+    }
+
+    
+  }, []);
 
   return (
     <>
