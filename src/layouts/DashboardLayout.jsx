@@ -68,7 +68,7 @@ export default function DashboardLayout() {
                     style={{ width: 90, height: 90 }}
                   />
                   <h5> {user && user ? user?.name : "Guest"} </h5>
-                  <small className="text-muted">+233 55 000 0000</small>
+                  <small className="text-muted"> { user && user ? user?.profile?.phone : "N.A" } </small>
                   <div className="mt-2">
                     <span className="badge bg-success">
                       <i className="fas fa-wifi me-1" /> Connected
