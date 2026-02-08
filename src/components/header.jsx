@@ -16,7 +16,7 @@ export default function Header() {
               <div className="logo-box d-flex align-items-center">
                 <div className="logo">
                   <Link to="/">
-                    <img src="images/logo.png" alt="" title="" />
+                    <img width="18%" height="18%" src="images/logo.png" alt="" title="" />
                   </Link>
                 </div>
               </div>

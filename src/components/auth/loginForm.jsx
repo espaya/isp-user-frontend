@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function LoginForm() {
   const apiBase = import.meta.env.VITE_API_URL;
@@ -13,7 +14,11 @@ export default function LoginForm() {
     email: "",
     password: "",
     remember: false,
+    login_type: "",
   });
+
+  const ip = new URLSearchParams(window.location.search).get("ip");
+  const mac = new URLSearchParams(window.location.search).get("mac");
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -35,39 +40,37 @@ export default function LoginForm() {
         credentials: "include",
       });
 
-      const getXsrfToken = () => {
-        const match = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("XSRF-TOKEN="));
-
-        return match ? decodeURIComponent(match.split("=")[1]) : "";
-      };
-
       // Login request
       const response = await fetch(`${apiBase}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "X-XSRF-TOKEN": getXsrfToken(),
+          "X-XSRF-TOKEN": Cookies.get("XSRF-TOKEN"),
         },
         credentials: "include", // ✅ Important for Sanctum
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, ip, mac }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.errors || { general: data.message || "Login failed" });
+        setError(data.errors || { general: data.message });
         return;
       }
 
       await fetchUser(); // Refresh user data after login
 
-      // Redirect on success
-      navigate(data.redirect_url || "/", { replace: true });
+      if (data.internet_success) {
+        navigate(`/dashboard/?success=${data.internet_success}`, {
+          replace: true,
+        });
+      } else {
+        // Redirect on success
+        navigate(data.redirect_url || "/", { replace: true });
+      }
     } catch (err) {
-      setError({ general: "An error occurred. Please try again." });
+      setError({ general: `Error: ${err.message}` });
     } finally {
       setLoading(false);
     }
@@ -86,7 +89,7 @@ export default function LoginForm() {
           <div className="default-form style-two">
             <form method="post" onSubmit={submitLogin}>
               <div className="form-group">
-                <label>Username or Email Address*</label>
+                <label>Email Address*</label>
                 <input
                   value={formData.email}
                   type="text"
@@ -137,6 +140,25 @@ export default function LoginForm() {
                   />
                   <label htmlFor="type-1">Remember me</label>
                 </div>
+              </div>
+
+              <div className="form-group">
+                <label>Login Type</label>
+
+                <select
+                  name="login_type"
+                  value={formData.login_type || ""}
+                  onChange={handleChange}
+                  className="form-control"
+                >
+                  <option value="">Select</option>
+                  <option value="portal">Portal</option>
+                  <option value="internet">Internet</option>
+                </select>
+
+                {error.login_type && (
+                  <small className="text-danger">{error.login_type[0]}</small>
+                )}
               </div>
 
               <div className="form-group">

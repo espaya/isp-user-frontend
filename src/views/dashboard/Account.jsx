@@ -1,4 +1,18 @@
+import { useEffect, useState } from "react";
+import fetchAcount from "../../controllers/FetchAccount";
+import { useParams } from "react-router-dom";
+
 export default function Account() {
+  const apiBase = import.meta.env.VITE_API_URL;
+  const [errors, setErrors] = useState({});
+  const [account, setAccount] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { success } = useParams();
+
+  useEffect(() => {
+    fetchAcount(apiBase, setErrors, setAccount, setLoading);
+  }, []);
+
   return (
     <div className="dashboard-content">
       <div className="row clearfix">
@@ -36,6 +50,7 @@ export default function Account() {
         <div className="col-lg-8 col-md-12 col-sm-12">
           {/* PERSONAL INFO */}
           <div className="order-box mb-4 p-4 shadow-sm rounded">
+            { success && <p className="alert alert-info">{success}</p>}
             <h4>
               <i className="fas fa-user text-primary me-2" /> Personal
               Information

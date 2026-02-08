@@ -16,7 +16,7 @@ export default function DashboardLayout() {
     { path: "/dashboard", label: "Dashboard", icon: "fas fa-home" },
     {
       path: "/dashboard/package",
-      label: "My Package",
+      label: "Available Package(s)",
       icon: "fas fa-wifi text-success",
     },
     {

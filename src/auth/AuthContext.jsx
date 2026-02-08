@@ -9,6 +9,12 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
+
+      await fetch(`${apiBase}/sanctum/csrf-cookie`, {
+        credentials: "include",
+        method: "GET",
+      });
+
       const res = await fetch(`${apiBase}/api/user`, {
         credentials: "include",
       });

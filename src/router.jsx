@@ -10,6 +10,8 @@ import Support from "./views/dashboard/Support";
 import Account from "./views/dashboard/Account";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ShowSubscriptionDetails from "./views/dashboard/ShowSubScriptionDetails";
+import Status from "./views/dashboard/Status";
+import InternetSignout from "./views/dashboard/InternetSignout";
 
 export const ROUTE_CONFIG = {
   LANDING: {
@@ -37,6 +39,9 @@ export const ROUTE_CONFIG = {
     element: <Login />,
   },
 
+  STATUS: { path: "status", element: <Status /> },
+  INTERNET_SIGNOUT: { path: "/internet-signout", element: <InternetSignout /> },
+
   // User dashboard routes
   DASHBOARD: {
     path: "/dashboard",
@@ -49,7 +54,10 @@ export const ROUTE_CONFIG = {
       { path: "payments", element: <Payments /> },
       { path: "support", element: <Support /> },
       { path: "account", element: <Account /> },
-      { path: "payment/success/:reference", element: <ShowSubscriptionDetails /> },
+      {
+        path: "payment/success/:reference",
+        element: <ShowSubscriptionDetails />,
+      },
     ],
   },
 };
