@@ -76,6 +76,7 @@ const handlePaymentSuccess = async (
       if (!verifyRes.ok)
         throw new Error(data.message || "Payment verification failed");
 
+      // get the current payment plan in the db
       setCurrentPackage({
         ...selectedPackage,
         expires: selectedPackage.name.includes("Daily")

@@ -1,6 +1,6 @@
 import Header from "../components/header";
 import Footer from "../components/footer";
-import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { Outlet, NavLink, useLocation, useParams } from "react-router-dom";
 import useLogout from "../components/auth/logout";
 import { useContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
@@ -17,19 +17,19 @@ export default function DashboardLayout() {
     { path: "/dashboard", label: "Dashboard", icon: "fas fa-home" },
     {
       path: "/dashboard/package",
-      label: "Available Package(s)",
+      label: "Available Package",
       icon: "fas fa-wifi text-success",
     },
     {
       path: "/dashboard/payments",
       label: "Payments",
-      icon: "fas fa-history text-warning",
+      icon: "fas fa-money-bill-wave text-warning",
     },
     {
       path: "/dashboard/account",
       label: "Account",
       icon: "fas fa-user text-primary",
-    },
+    }
   ];
 
   return (

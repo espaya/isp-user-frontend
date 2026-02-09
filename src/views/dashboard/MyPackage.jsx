@@ -6,6 +6,7 @@ import { AuthContext } from "../../auth/AuthContext";
 import PaymentModal from "../../components/user/PaymentModal";
 import handlePaymentSuccess from "../../controllers/HandlePayment";
 import CurrentPackageCard from "../../components/user/CurrentPackageCard";
+import CurrentPackage from "../../controllers/CurrentPackage";
 
 export default function MyPackage() {
   const [currentPackage, setCurrentPackage] = useState(null);
@@ -56,6 +57,11 @@ export default function MyPackage() {
     return "Current";
   };
 
+
+  useEffect(() => {
+    CurrentPackage(setLoading, apiBase, setCurrentPackage, setErrors);
+  }, []);
+
   useEffect(() => {
     fetchPackages(setLoading, setErrors, apiBase, setPackages, setPagination);
   }, []);
@@ -69,11 +75,10 @@ export default function MyPackage() {
       )}
 
       {/* CURRENT PACKAGE */}
-      {currentPackage && currentPackage.name && (
+      {currentPackage && currentPackage?.package?.name && (
         <CurrentPackageCard
           currentPackage={currentPackage}
           handleCancel={handleCancel}
-          setCurrentPackage={setCurrentPackage}
         />
       )}
 

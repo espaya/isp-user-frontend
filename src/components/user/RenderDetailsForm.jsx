@@ -141,6 +141,7 @@ const renderDetailsForm = (method, details, setDetails, errors) => {
           <option value="">Select provider</option>
           <option value="mtn">MTN</option>
           <option value="telecel">Telecel</option>
+          <option value="at">AirtelTigo</option>
         </select>
         {errors?.provider && (
           <small className="text-danger">{errors.provider}</small>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
+import formatDate from "../../utils/formatDate";
 
 export default function ShowSubscriptionDetails() {
   const { trxref, reference } = useParams();
@@ -68,7 +69,7 @@ export default function ShowSubscriptionDetails() {
 
             <div className="card-body">
               <p>
-                <strong>Device:</strong> {data.device}
+                <strong>Device:</strong> {data.device ?? "N/A"}
               </p>
 
               <p>
@@ -81,13 +82,13 @@ export default function ShowSubscriptionDetails() {
               <p>
                 <strong>Starts At:</strong>
                 <br />
-                {new Date(data.subscription.starts_at).toLocaleString()}
+                {formatDate(data.subscription.starts_at, true)}
               </p>
 
               <p>
                 <strong>Expires At:</strong>
                 <br />
-                {new Date(data.subscription.expires_at).toLocaleString()}
+                {formatDate(data.subscription.expires_at, true)}
               </p>
 
               <div className="alert alert-info mt-3">
