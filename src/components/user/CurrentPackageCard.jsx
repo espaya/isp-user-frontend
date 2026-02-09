@@ -16,7 +16,7 @@ export default function CurrentPackageCard({ currentPackage, handleCancel, setCu
           <div className="row g-4">
             {[
               {
-                label: "Package",
+                label: "Package", 
                 value: currentPackage.name,
                 icon: "fa-box",
                 color: "primary",

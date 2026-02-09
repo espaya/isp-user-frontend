@@ -4,6 +4,7 @@ import { Outlet, NavLink, useLocation } from "react-router-dom";
 import useLogout from "../components/auth/logout";
 import { useContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
+import Avatar from "../components/Avatar";
 
 export default function DashboardLayout() {
   const location = useLocation(); // get current path
@@ -62,13 +63,12 @@ export default function DashboardLayout() {
               <div className="order-box text-center">
                 {/* PROFILE */}
                 <div className="mb-4">
-                  <img
-                    src="/images/avatar.png"
-                    className="rounded-circle mb-2"
-                    style={{ width: 90, height: 90 }}
-                  />
+                  <Avatar />
                   <h5> {user && user ? user?.name : "Guest"} </h5>
-                  <small className="text-muted"> { user && user ? user?.profile?.phone : "N.A" } </small>
+                  <small className="text-muted">
+                    {" "}
+                    {user && user ? user?.profile?.phone : "N.A"}{" "}
+                  </small>
                   <div className="mt-2">
                     <span className="badge bg-success">
                       <i className="fas fa-wifi me-1" /> Connected
