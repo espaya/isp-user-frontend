@@ -1,14 +1,20 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
+import fetchAcount from "../controllers/FetchAccount";
 
 export default function Avatar() {
   const apiBase = import.meta.env.VITE_API_URL;
   const fileInputRef = useRef(null);
+  const [errors, setErrors] = useState({});
+  const [account, setAccount] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const [preview, setPreview] = useState("/images/avatar.png");
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
+
+  const avatar = account?.profile?.avatar;
 
   const uploadAvatar = async (file) => {
     if (!file) return;
@@ -96,6 +102,10 @@ export default function Avatar() {
     uploadAvatar(file);
   };
 
+  useEffect(() => {
+    fetchAcount(apiBase, setErrors, setAccount, setLoading);
+  }, []);
+
   return (
     <div className="text-center">
       <div
@@ -117,7 +127,7 @@ export default function Avatar() {
       >
         {/* Avatar */}
         <img
-          src={preview}
+          src={avatar ? `${apiBase}/storage/${avatar}` : preview}
           alt="Avatar"
           className="w-100 h-100"
           style={{ objectFit: "cover", opacity: uploading ? 0.5 : 1 }}

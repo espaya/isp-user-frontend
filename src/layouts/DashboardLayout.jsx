@@ -69,11 +69,6 @@ export default function DashboardLayout() {
                     {" "}
                     {user && user ? user?.profile?.phone : "N.A"}{" "}
                   </small>
-                  <div className="mt-2">
-                    <span className="badge bg-success">
-                      <i className="fas fa-wifi me-1" /> Connected
-                    </span>
-                  </div>
                 </div>
 
                 {/* MENU */}
