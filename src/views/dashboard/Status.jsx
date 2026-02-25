@@ -39,6 +39,8 @@ export default function Status() {
 
   const [seeMore, setSeeMore] = useState(false);
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     if (!ip) {
       navigate("/login", { replace: true });
@@ -51,7 +53,7 @@ export default function Status() {
       try {
         const res = await fetch(
           `${apiBase}/api/hotspot/status?ip=${ip}&mac=${mac}&username=${username}`,
-          { credentials: "include" },
+          { Authorization: `Bearer ${token}` },
         );
 
         const data = await res.json();

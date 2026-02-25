@@ -30,10 +30,6 @@ export default function RegisterForm() {
     setSuccessMessage("");
 
     try {
-      await fetch(`${apiBase}/sanctum/csrf-cookie`, {
-        method: "GET",
-        credentials: "include",
-      });
 
       const response = await fetch(`${apiBase}/api/register`, {
         method: "POST",
@@ -42,7 +38,6 @@ export default function RegisterForm() {
           Accept: "application/json",
         },
         body: JSON.stringify(formData),
-        credentials: "include",
       });
 
       const data = await response.json();

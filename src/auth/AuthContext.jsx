@@ -9,20 +9,27 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
+      const token = localStorage.getItem("token");
 
-      await fetch(`${apiBase}/sanctum/csrf-cookie`, {
-        credentials: "include",
-        method: "GET",
-      });
+      if (!token) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
 
       const res = await fetch(`${apiBase}/api/user`, {
-        credentials: "include",
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
       });
 
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
       } else {
+        localStorage.removeItem("token");
         setUser(null);
       }
     } catch {

@@ -11,18 +11,19 @@ export default function ShowSubscriptionDetails() {
   const [data, setData] = useState(null);
   const apiBase = import.meta.env.VITE_API_URL;
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     async function fetchSubscription() {
       try {
         const res = await fetch(
           `${apiBase}/api/subscriptions/by-reference/${reference}`,
           {
-            credentials: "include",
             method: "GET",
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
-              "X-XSRF-TOKEN": decodeURIComponent(Cookies.get("XSRF-TOKEN")),
+              Authorization: `Bearer ${token}`,
             },
           },
         );

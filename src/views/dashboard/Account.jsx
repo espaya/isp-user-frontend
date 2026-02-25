@@ -12,6 +12,8 @@ export default function Account() {
   const { success } = useParams();
   const [passLoading, setPassLoading] = useState(false);
 
+  const token = localStorage.getItem("token");
+
   const [showPasswords, setShowPasswords] = useState({
     newPassword: false,
     confirmPassword: false,
@@ -65,12 +67,11 @@ export default function Account() {
 
     try {
       const response = await fetch(`${apiBase}/api/update-profile`, {
-        credentials: "include",
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "X-XSRF-TOKEN": decodeURIComponent(Cookies.get("XSRF-TOKEN")),
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           name: formData.name,
@@ -112,12 +113,11 @@ export default function Account() {
 
     try {
       const response = await fetch(`${apiBase}/api/update-password`, {
-        credentials: "include",
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "X-XSRF-TOKEN": decodeURIComponent(Cookies.get("XSRF-TOKEN")),
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           password: formData.newPassword,

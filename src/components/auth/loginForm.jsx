@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import Cookies from "js-cookie";
 
 export default function LoginForm() {
   const apiBase = import.meta.env.VITE_API_URL;
@@ -34,21 +33,13 @@ export default function LoginForm() {
     setError({});
 
     try {
-      // Get CSRF cookie
-      await fetch(`${apiBase}/sanctum/csrf-cookie`, {
-        method: "GET",
-        credentials: "include",
-      });
-
       // Login request
       const response = await fetch(`${apiBase}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "X-XSRF-TOKEN": Cookies.get("XSRF-TOKEN"),
         },
-        credentials: "include", // ✅ Important for Sanctum
         body: JSON.stringify({ ...formData, ip, mac }),
       });
 
@@ -58,6 +49,8 @@ export default function LoginForm() {
         setError(data.errors || { general: data.message });
         return;
       }
+
+      localStorage.setItem("token", data.token);
 
       await fetchUser(); // Refresh user data after login
 

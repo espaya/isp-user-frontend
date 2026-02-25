@@ -11,15 +11,17 @@ const FetchPayments = async (
   setErrors({});
 
   try {
+
+    const token = localStorage.getItem("token")
+
     const response = await fetch(
       `${apiBase}/api/get-user-payments?page=${page}`,
       {
-        credentials: "include",
         method: "GET",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "X-XSRF-TOKEN": decodeURIComponent(Cookies.get("XSRF-TOKEN")),
+          Authorization: `Bearer ${token}`
         },
       },
     );

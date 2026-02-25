@@ -10,17 +10,14 @@ const fetchPackages = async (
   setLoading(true);
 
   try {
-    await fetch(`${apiBase}/sanctum/csrf-cookie`, {
-      credentials: "include",
-    });
+    const token = localStorage.getItem("token");
 
     const response = await fetch(`${apiBase}/api/my-packages?page=1`, {
-      credentials: "include",
       method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "X-XSRF-TOKEN": decodeURIComponent(Cookies.get("CSRF-TOKEN")),
+        Authorization: `Bearer ${token}`,
       },
     });
 

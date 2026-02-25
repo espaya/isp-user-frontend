@@ -16,15 +16,15 @@ const handlePaymentSuccess = async (
   setErrors({});
 
   try {
-    await fetch(`${apiBase}/sanctum/csrf-cookie`, { credentials: "include" });
+
+    const token = localStorage.getItem("token");
 
     // 1️⃣ Initialize payment with backend
     const initRes = await fetch(`${apiBase}/api/paystack/initialize`, {
       method: "POST",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        "X-XSRF-TOKEN": decodeURIComponent(Cookies.get("XSRF-TOKEN")),
+        Authorization: `Bearer ${token}`,
         Accept: "application/json",
       },
       body: JSON.stringify({
@@ -67,7 +67,7 @@ const handlePaymentSuccess = async (
       const verifyRes = await fetch(
         `${apiBase}/api/paystack/verify/${reference}`,
         {
-          credentials: "include",
+          // credentials: "include",
         },
       );
 

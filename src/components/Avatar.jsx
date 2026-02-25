@@ -14,6 +14,8 @@ export default function Avatar() {
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
 
+  const token = localStorage.getItem("token")
+
   const avatar = account?.profile?.avatar;
 
   const uploadAvatar = async (file) => {
@@ -40,10 +42,9 @@ export default function Avatar() {
     try {
       const response = await fetch(`${apiBase}/api/upload-avatar`, {
         method: "POST",
-        credentials: "include",
         headers: {
           Accept: "application/json",
-          "X-XSRF-TOKEN": decodeURIComponent(Cookies.get("XSRF-TOKEN")),
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       });

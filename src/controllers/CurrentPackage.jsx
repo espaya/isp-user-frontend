@@ -10,13 +10,15 @@ const CurrentPackage = async (
   setLoading(true);
 
   try {
+
+    const token = localStorage.getItem("token");
+
     const response = await fetch(`${apiBase}/api/user-current-package`, {
-      credentials: "include",
       method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "X-XSRF-TOKEN": decodeURIComponent(Cookies.get("XSRF-TOKEN")),
+        Authorization: `Bearer ${token}`
       },
     });
 
