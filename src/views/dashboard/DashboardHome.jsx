@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -11,10 +11,46 @@ import {
   Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 export default function DashboardHome() {
   const [selectedPeriod, setSelectedPeriod] = useState("daily");
+  const apiBase = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem("token");
+  const [dashboard, setDashboard] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchDashboard = async () => {
+    try {
+      const res = await fetch(`${apiBase}/api/user/dashboard`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      setDashboard(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
 
   // Chart data
   const chartData = {
@@ -23,7 +59,7 @@ export default function DashboardHome() {
       datasets: [
         {
           label: "Data Usage (MB)",
-          data: [50, 120, 200, 180, 220, 160, 100],
+          data: dashboard?.usage?.daily ?? [],
           fill: true,
           backgroundColor: "rgba(54, 162, 235, 0.2)",
           borderColor: "rgba(54, 162, 235, 1)",
@@ -36,7 +72,7 @@ export default function DashboardHome() {
       datasets: [
         {
           label: "Data Usage (GB)",
-          data: [5, 6, 4, 7, 8, 6, 5],
+          data: dashboard?.usage?.weekly ?? [],
           fill: true,
           backgroundColor: "rgba(255, 206, 86, 0.2)",
           borderColor: "rgba(255, 206, 86, 1)",
@@ -45,11 +81,24 @@ export default function DashboardHome() {
       ],
     },
     monthly: {
-      labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
       datasets: [
         {
           label: "Data Usage (GB)",
-          data: [10, 15, 12, 18, 20, 25, 30, 28, 22, 18, 15, 20],
+          data: dashboard?.usage?.monthly ?? [],
           fill: true,
           backgroundColor: "rgba(255, 99, 132, 0.2)",
           borderColor: "rgba(255, 99, 132, 1)",
@@ -70,19 +119,36 @@ export default function DashboardHome() {
           selectedPeriod === "daily"
             ? "Daily Internet Usage"
             : selectedPeriod === "weekly"
-            ? "Weekly Internet Usage"
-            : "Monthly Internet Usage",
+              ? "Weekly Internet Usage"
+              : "Monthly Internet Usage",
         font: { size: 18 },
       },
     },
     scales: {
       y: {
         beginAtZero: true,
-        title: { display: true, text: selectedPeriod === "daily" ? "MB Used" : "GB Used" },
+        title: {
+          display: true,
+          text: selectedPeriod === "daily" ? "MB Used" : "GB Used",
+        },
       },
-      x: { title: { display: true, text: selectedPeriod === "daily" ? "Time of Day" : selectedPeriod === "weekly" ? "Day" : "Month" } },
+      x: {
+        title: {
+          display: true,
+          text:
+            selectedPeriod === "daily"
+              ? "Time of Day"
+              : selectedPeriod === "weekly"
+                ? "Day"
+                : "Month",
+        },
+      },
     },
   };
+
+  if (loading) {
+    return <div className="text-center py-5">Loading dashboard...</div>;
+  }
 
   return (
     <>
@@ -92,7 +158,15 @@ export default function DashboardHome() {
           <div className="price-block_one-inner text-center p-3 border rounded shadow-sm">
             <i className="fas fa-wifi fa-3x text-success mb-2" />
             <h5>Status</h5>
-            <p className="text-success">Connected</p>
+            <p
+              className={
+                dashboard?.status === "Connected"
+                  ? "text-success"
+                  : "text-danger"
+              }
+            >
+              {dashboard?.status}
+            </p>
           </div>
         </div>
 
@@ -100,7 +174,7 @@ export default function DashboardHome() {
           <div className="price-block_one-inner text-center p-3 border rounded shadow-sm">
             <i className="fas fa-clock fa-3x text-warning mb-2" />
             <h5>Time Left</h5>
-            <p>6 Hours</p>
+            <p>{dashboard?.timeLeft} Hours</p>
           </div>
         </div>
 
@@ -108,7 +182,7 @@ export default function DashboardHome() {
           <div className="price-block_one-inner text-center p-3 border rounded shadow-sm">
             <i className="fas fa-tachometer-alt fa-3x text-primary mb-2" />
             <h5>Speed</h5>
-            <p>10 Mbps</p>
+            <p>{dashboard?.speed} Mbps</p>
           </div>
         </div>
 
@@ -116,7 +190,9 @@ export default function DashboardHome() {
           <div className="price-block_one-inner text-center p-3 border rounded shadow-sm">
             <i className="fas fa-box fa-3x text-info mb-2" />
             <h5>Package</h5>
-            <p>Daily – ¢10</p>
+            <p>
+              {dashboard?.package} – ¢{dashboard?.price}
+            </p>
           </div>
         </div>
       </div>
