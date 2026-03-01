@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import fetchAccount from "../../controllers/FetchAccount";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import Cookies from "js-cookie";
+import ConnectedDevice from "../../components/user/ConnectedDevice";
 
 export default function Account() {
   const apiBase = import.meta.env.VITE_API_URL;
@@ -192,19 +192,6 @@ export default function Account() {
     },
   ];
 
-  const devices = [
-    {
-      name: "iPhone 13",
-      icon: "fas fa-mobile-alt text-primary",
-      status: "Active",
-    },
-    {
-      name: "HP Laptop",
-      icon: "fas fa-laptop text-secondary",
-      status: "Active",
-    },
-  ];
-
   return (
     <div className="dashboard-content">
       <div className="row clearfix">
@@ -289,56 +276,7 @@ export default function Account() {
           ))}
 
           {/* Connected Devices */}
-          <div className="order-box p-3 shadow-sm rounded">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h5 className="mb-0">
-                <i className="fas fa-laptop text-info me-2" /> Connected Devices
-              </h5>
-
-              <span className="badge bg-light text-dark border">
-                {devices.length} Device{devices.length > 1 ? "s" : ""}
-              </span>
-            </div>
-
-            <ul className="list-unstyled mb-3">
-              {devices.map((device, index) => (
-                <li
-                  key={index}
-                  className="d-flex justify-content-between align-items-center p-2 mb-2 rounded border bg-white"
-                >
-                  <div className="d-flex align-items-center">
-                    <div
-                      className="me-2 d-flex justify-content-center align-items-center rounded-circle bg-light"
-                      style={{ width: 35, height: 35 }}
-                    >
-                      <i className={`${device.icon}`} />
-                    </div>
-
-                    <div>
-                      <strong className="d-block">{device.name}</strong>
-                      <small className="text-muted">Last seen: Just now</small>
-                    </div>
-                  </div>
-
-                  <span
-                    className={`badge ${
-                      device.status === "Active" ? "bg-success" : "bg-secondary"
-                    }`}
-                  >
-                    {device.status}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <button className="btn btn-outline-danger btn-sm w-100 d-flex justify-content-center align-items-center gap-2">
-              <i className="fas fa-sign-out-alt" /> Disconnect All Devices
-            </button>
-
-            <small className="text-muted d-block mt-2 text-center">
-              Disconnecting devices will log you out everywhere.
-            </small>
-          </div>
+          <ConnectedDevice />
         </div>
       </div>
     </div>

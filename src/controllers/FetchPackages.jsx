@@ -37,6 +37,8 @@ const fetchPackages = async (
     });
   } catch (err) {
     setErrors({ general: err.message });
+  } finally {
+    setLoading(false);
   }
 };
 

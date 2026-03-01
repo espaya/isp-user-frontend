@@ -24,11 +24,6 @@ export default function Packages() {
             </h2>
           </div>
           <Daily10 />
-          <Daily15 />
-          <Weekly60 />
-          <Weekly80 />
-          <Monthly130 />
-          <SpecialOffer />
         </div>
       </section>
     </>

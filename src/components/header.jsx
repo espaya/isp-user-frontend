@@ -16,7 +16,7 @@ export default function Header() {
               <div className="logo-box d-flex align-items-center">
                 <div className="logo">
                   <Link to="/">
-                    <img width="18%" height="18%" src="images/logo.png" alt="" title="" />
+                    <img width="18%" height="18%" src="/images/logo.png" alt="" title="" />
                   </Link>
                 </div>
               </div>
@@ -115,13 +115,13 @@ export default function Header() {
                   <div className="header-phone_box-inner">
                     <div className="header-phone_box-icon flaticon-consulting" />
                     Help line <br />
-                    <a href="tel:+66-7800-3202">+66(7800) 3202</a>
+                    <a href="tel:+233542833341">+233542833341</a>
                   </div>
                 </div>
                 {/* Mobile Navigation Toggler */}
                 <div className="mobile-nav-toggler">
                   <span className="icon">
-                    <img src="images/icons/menu.png" alt="" />
+                    <img src="/images/icons/menu.png" alt="" />
                   </span>
                 </div>
               </div>

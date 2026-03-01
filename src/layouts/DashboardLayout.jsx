@@ -29,7 +29,7 @@ export default function DashboardLayout() {
       path: "/dashboard/account",
       label: "Account",
       icon: "fas fa-user text-primary",
-    }
+    },
   ];
 
   return (
@@ -76,15 +76,15 @@ export default function DashboardLayout() {
                   {menuItems.map((item) => (
                     <li
                       key={item.path}
-                      className={`list-group-item ${
-                        location.pathname === item.path
-                          ? "active bg-primary text-white"
-                          : ""
-                      }`}
+                      className="list-group-item p-0 border-0"
                     >
                       <NavLink
                         to={item.path}
-                        className="d-flex align-items-center text-decoration-none"
+                        end
+                        className={({ isActive }) =>
+                          `d-flex align-items-center text-decoration-none px-3 py-2 rounded
+      ${isActive ? "bg-primary text-white" : "text-dark"}`
+                        }
                       >
                         <i className={`${item.icon} me-2`}></i>
                         {item.label}
