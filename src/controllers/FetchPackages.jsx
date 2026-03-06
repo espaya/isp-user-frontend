@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 
 const fetchPackages = async (
   setLoading,

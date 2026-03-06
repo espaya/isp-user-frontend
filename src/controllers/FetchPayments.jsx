@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 
 const FetchPayments = async (
   setLoading,

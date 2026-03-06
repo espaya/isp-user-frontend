@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Cookies from "js-cookie";
 import formatDate from "../../utils/formatDate";
+import useLogout from "../../components/auth/logout";
 
 export default function ShowSubscriptionDetails() {
   const { trxref, reference } = useParams();
@@ -10,6 +10,8 @@ export default function ShowSubscriptionDetails() {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const apiBase = import.meta.env.VITE_API_URL;
+
+  const logout = useLogout();
 
   const token = localStorage.getItem("token");
 
@@ -90,6 +92,18 @@ export default function ShowSubscriptionDetails() {
                 <strong>Expires At:</strong>
                 <br />
                 {formatDate(data.subscription.expires_at, true)}
+              </p>
+
+              <p>
+                <strong>Internet Login Link:</strong>
+                <br />
+                <small>
+                  Use your email and the password below to access internet
+                </small>
+                <br />
+                <a onClick={logout} href="#">
+                  Internet Login
+                </a>
               </p>
 
               <div className="alert alert-info mt-3">

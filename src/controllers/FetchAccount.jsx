@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 
 const fetchAcount = async (apiBase, setErrors, setAccount, setLoading) => {
   setLoading(true);

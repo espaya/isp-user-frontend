@@ -2,7 +2,7 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 import { Outlet, NavLink, useLocation, useParams } from "react-router-dom";
 import useLogout from "../components/auth/logout";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../auth/AuthContext";
 import Avatar from "../components/Avatar";
 
@@ -10,6 +10,9 @@ export default function DashboardLayout() {
   const location = useLocation(); // get current path
   const logout = useLogout();
   const { user } = useContext(AuthContext);
+  const apiBase = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem("token");
+  const [reference, setReference] = useState({});
 
   document.title = "Dashboard - ISP Automated Payment System";
 
@@ -31,6 +34,31 @@ export default function DashboardLayout() {
       icon: "fas fa-user text-primary",
     },
   ];
+
+  // get current internet/hotspot details
+  const getHotspot = async () => {
+    try {
+      const res = await fetch(`${apiBase}/api/hotspot-info`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      setReference(data);
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    getHotspot();
+  }, []);
 
   return (
     <div className="page-wrapper">
@@ -91,6 +119,20 @@ export default function DashboardLayout() {
                       </NavLink>
                     </li>
                   ))}
+
+                  {reference && (
+                    <li className="list-group-item decoration-none">
+                      <NavLink
+                        className="d-flex align-items-center btn btn-link text-start w-100 p-0"
+                        to={`/dashboard/payment/success/${reference}`}
+                        style={{ textDecoration: "none" }} // ✅ removes underline
+                      >
+                        <i className="fas fa-globe text-info me-2"></i>
+                        Internet
+                      </NavLink>
+                    </li>
+                  )}
+
                   <li className="list-group-item decoration-none">
                     <button
                       className="d-flex align-items-center btn btn-link text-start w-100 p-0"
