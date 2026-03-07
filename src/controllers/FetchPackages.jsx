@@ -1,4 +1,3 @@
-
 const fetchPackages = async (
   setLoading,
   setErrors,
@@ -9,14 +8,11 @@ const fetchPackages = async (
   setLoading(true);
 
   try {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(`${apiBase}/api/my-packages?page=1`, {
+    const response = await fetch(`${apiBase}/api/frontend-packages?page=1`, {
       method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
 

@@ -1,6 +1,7 @@
 import Footer from "../components/footer";
 import Header from "../components/header";
 import Packages from "../components/packages";
+import TermsTabs from "../components/TermsTabs";
 
 export default function Landing() {
   return (
@@ -143,19 +144,15 @@ export default function Landing() {
                         Your Trusted Partner
                       </div>
                       <h1 className="slider-one_heading">
-                        Ultra Fast internet Entertainment
+                        Unlimited Speed. Unlimited Possibilities.
                       </h1>
                       <div className="slider-one_text">
-                        Can consent to the use of such technologies byclosing
-                        this notice <br /> senectus amet sodales habitant
-                        dapibus
+                        Stream, work, game, and connect without limits with
+                        NovaNet Hotspot.
                       </div>
                       {/* Button Box */}
                       <div className="slider-one_button-box d-flex align-items-center flex-wrap">
-                        <a
-                          className="btn-style-one theme-btn"
-                          href="about.html"
-                        >
+                        <a className="btn-style-one theme-btn" href="/#price">
                           <div className="btn-wrap">
                             <span className="text-one">Discover More</span>
                             <span className="text-two">Discover More</span>
@@ -167,103 +164,14 @@ export default function Landing() {
                             <i className="fa fa-phone" />
                           </div>
                           Give us a call <br />
-                          <a href="tel:+123-4567-890">+123 (4567) 890</a>
+                          <a href="tel:+123-4567-890">+233 (0)54 283 3341</a>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              {/* Slide */}
-              <div className="swiper-slide">
-                <div
-                  className="slider-one_image"
-                  style={{ backgroundImage: "url(images/main-slider/1.jpg)" }}
-                />
-                <div className="auto-container">
-                  {/* Content Column */}
-                  <div className="slider-one_content-column">
-                    <div className="slider-one_content-inner">
-                      <div className="slider-one_title">
-                        Your Trusted Partner
-                      </div>
-                      <h1 className="slider-one_heading">
-                        Ultra Fast internet Entertainment
-                      </h1>
-                      <div className="slider-one_text">
-                        Can consent to the use of such technologies byclosing
-                        this notice <br /> senectus amet sodales habitant
-                        dapibus
-                      </div>
-                      {/* Button Box */}
-                      <div className="slider-one_button-box d-flex align-items-center flex-wrap">
-                        <a
-                          className="btn-style-one theme-btn"
-                          href="about.html"
-                        >
-                          <div className="btn-wrap">
-                            <span className="text-one">Discover More</span>
-                            <span className="text-two">Discover More</span>
-                          </div>
-                        </a>
-                        {/* Slider One Phone */}
-                        <div className="slider-one_phone">
-                          <div className="slider-one_phone-icon">
-                            <i className="fa fa-phone" />
-                          </div>
-                          Give us a call <br />
-                          <a href="tel:+123-4567-890">+123 (4567) 890</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Slide */}
-              <div className="swiper-slide">
-                <div
-                  className="slider-one_image"
-                  style={{ backgroundImage: "url(images/main-slider/1.jpg)" }}
-                />
-                <div className="auto-container">
-                  {/* Content Column */}
-                  <div className="slider-one_content-column">
-                    <div className="slider-one_content-inner">
-                      <div className="slider-one_title">
-                        Your Trusted Partner
-                      </div>
-                      <h1 className="slider-one_heading">
-                        Ultra Fast internet Entertainment
-                      </h1>
-                      <div className="slider-one_text">
-                        Can consent to the use of such technologies byclosing
-                        this notice <br /> senectus amet sodales habitant
-                        dapibus
-                      </div>
-                      {/* Button Box */}
-                      <div className="slider-one_button-box d-flex align-items-center flex-wrap">
-                        <a
-                          className="btn-style-one theme-btn"
-                          href="about.html"
-                        >
-                          <div className="btn-wrap">
-                            <span className="text-one">Discover More</span>
-                            <span className="text-two">Discover More</span>
-                          </div>
-                        </a>
-                        {/* Slider One Phone */}
-                        <div className="slider-one_phone">
-                          <div className="slider-one_phone-icon">
-                            <i className="fa fa-phone" />
-                          </div>
-                          Give us a call <br />
-                          <a href="tel:+123-4567-890">+123 (4567) 890</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* other slides */}
             </div>
             {/* If we need pagination */}
             <div className="swiper-pagination" />
@@ -273,65 +181,7 @@ export default function Landing() {
           </div>
         </section>
         {/* End Slider One */}
-        {/* Service One */}
-        <section className="service-one">
-          <div className="auto-container">
-            <div className="row g-0">
-              {/* Service Block One */}
-              <div className="service-block_one col-lg-4 col-md-6 col-sm-12">
-                <div className="service-block_one-inner">
-                  <div className="service-block_one-upper">
-                    <div className="service-block_one-icon flaticon-wifi-router-1" />
-                    <h4 className="service-block_one-heading">
-                      <a href="service-detail.html">
-                        Fiber <br /> Broadband
-                      </a>
-                    </h4>
-                  </div>
-                  <div className="service-block_one-text">
-                    Many desktop Wifi packages &amp; web page editors now use
-                    Ipsum budgets dipiscing{" "}
-                  </div>
-                </div>
-              </div>
-              {/* Service Block One */}
-              <div className="service-block_one col-lg-4 col-md-6 col-sm-12">
-                <div className="service-block_one-inner">
-                  <div className="service-block_one-upper">
-                    <div className="service-block_one-icon flaticon-smartphone" />
-                    <h4 className="service-block_one-heading">
-                      <a href="service-detail.html">
-                        All For <br /> Mobiles Conatct
-                      </a>
-                    </h4>
-                  </div>
-                  <div className="service-block_one-text">
-                    Many desktop Wifi packages &amp; web page editors now use
-                    Ipsum budgets dipiscing{" "}
-                  </div>
-                </div>
-              </div>
-              {/* Service Block One */}
-              <div className="service-block_one col-lg-4 col-md-6 col-sm-12">
-                <div className="service-block_one-inner">
-                  <div className="service-block_one-upper">
-                    <div className="service-block_one-icon flaticon-cinema" />
-                    <h4 className="service-block_one-heading">
-                      <a href="service-detail.html">
-                        TV and <br /> Streeming
-                      </a>
-                    </h4>
-                  </div>
-                  <div className="service-block_one-text">
-                    Many desktop Wifi packages &amp; web page editors now use
-                    Ipsum budgets dipiscing{" "}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        {/* End Service One */}
+       
         {/* About One */}
         <section className="about-one" id="about">
           <div className="auto-container">
@@ -363,38 +213,46 @@ export default function Landing() {
                 </div>
               </div>
               {/* Content Column */}
-              <div className="about-one_content-column col-lg-6 col-md-12 col-sm-12">
+              <div className="about-one_content-column col-lg-6 col-md-12 col-sm-12 mt-5">
                 <div className="about-one_content-outer">
                   <div className="sec-title">
                     <div className="sec-title_title tx-split-text split-in-right">
                       WHO WE ARE
                     </div>
-                    <h2 className="sec-title_heading tx-split-text split-in-right">
-                      Get fast internet service <br /> with your TV service
-                    </h2>
                   </div>
                   <div className="about-one_bold-text">
-                    Phasellus non cursus ligula, sed mattis urna. Aenean ac tor
-                    gravida, volutpat quam eget, consequat elit.
+                    NovaNet is a modern internet hotspot and billing solution
+                    provider focused on delivering fast, stable, and secure
+                    connectivity to our community. We combine smart network
+                    technology with a seamless billing system to give users easy
+                    access and full control of their data usage.
                   </div>
-                  <div className="about-one_feature">
-                    <div className="about-one_feature-icon flaticon-cyber-security" />
-                    <strong>Secure internet</strong>
-                    Risus commodo viverra maecenas accumsan lacus vel metus erat
-                    facilisis.
+                  <div className="sec-title">
+                    <div className="sec-title_title tx-split-text split-in-right">
+                      OUR SERVICES
+                    </div>
                   </div>
                   <ul className="about-one_lists">
                     <li>
-                      <i className="arrow fa fa-arrow-circle-right" /> Internet
-                      &amp; TV service solutions
+                      <i className="arrow fa fa-arrow-circle-right" />
+                      Secure Internet - Advanced network security and user
+                      authentication to keep your connection safe.
                     </li>
                     <li>
-                      <i className="arrow fa fa-arrow-circle-right" /> Top
-                      quality services with reasonable price
+                      <i className="arrow fa fa-arrow-circle-right" />
+                      High Speed Hotspot Access - Reliable and optimized WiFi
+                      coverage for homes, shops, offices, and public spaces.
                     </li>
                     <li>
-                      <i className="arrow fa fa-arrow-circle-right" /> Live
-                      sports and TV shows with ultra fast speed
+                      <i className="arrow fa fa-arrow-circle-right" />
+                      Smart Billing System - Easy voucher generation, Mobile
+                      money, online payments, usage tracking, and automated user
+                      management.
+                    </li>
+                    <li>
+                      <i className="arrow fa fa-arrow-circle-right" />
+                      Stable Coverage - Strategic access point placement to
+                      ensure strong and consistent signal strength.
                     </li>
                   </ul>
                   {/* Button Box */}
@@ -420,99 +278,41 @@ export default function Landing() {
             <div className="sec-title">
               <div className="d-flex justify-content-between align-items-center flex-wrap">
                 <div className="left-box">
-                  <div className="sec-title_title">OUR BENEFITS</div>
-                  <h2 className="sec-title_heading">
-                    A few great reasons make <br /> you choice usbr
-                  </h2>
+                  <div className="sec-title_title"> WHY CHOOSE NOVANET</div>
+                  <ul className="about-one_lists">
+                    <li>
+                      <i className="arrow fa fa-arrow-circle-right" />
+                      Fast and Stable Connection
+                    </li>
+                    <li>
+                      <i className="arrow fa fa-arrow-circle-right" />
+                      Affordable Data Packages
+                    </li>
+                    <li>
+                      <i className="arrow fa fa-arrow-circle-right" />
+                      Easy Login & Voucher Access
+                    </li>
+                    <li>
+                      <i className="arrow fa fa-arrow-circle-right" />
+                      24/7 Network Monitoring
+                    </li>
+                    <li>
+                      <i className="arrow fa fa-arrow-circle-right" />
+                      Community-Focused Service
+                    </li>
+                  </ul>
                 </div>
                 <div className="right-box">
+                  <div className="sec-title_title"> OUR MISSION</div>
                   <div className="sec-title_text">
-                    Business is the activity of making one's living or making
-                    money by producing cumsociis natoque penatibus et magnis dis
-                    partu rient to montes. Aene an massa. cumsociis natoque
-                    penatibus.
+                    To provide reliable, affordable, and high-performance
+                    internet access that empowers individuals and businesses to
+                    thrive in the digital world.
                   </div>
                 </div>
               </div>
             </div>
-            <div className="row clearfix">
-              {/* Benefit Block One */}
-              <div className="benefit-block_one col-lg-3 col-md-6 col-sm-6">
-                <div className="benefit-block_one-inner">
-                  <div
-                    className="benefit-block_one-pattern"
-                    style={{
-                      backgroundImage:
-                        "url(images/background/benefit-block_pattern.png)",
-                    }}
-                  />
-                  <div className="benefit-block_one-color" />
-                  <div className="benefit-block_one-icon flaticon-installation" />
-                  <h4 className="benefit-block_one-heading">
-                    <a href="service-detail.html">
-                      Free <br /> Installation
-                    </a>
-                  </h4>
-                </div>
-              </div>
-              {/* Benefit Block One */}
-              <div className="benefit-block_one col-lg-3 col-md-6 col-sm-6">
-                <div className="benefit-block_one-inner">
-                  <div
-                    className="benefit-block_one-pattern"
-                    style={{
-                      backgroundImage:
-                        "url(images/background/benefit-block_pattern.png)",
-                    }}
-                  />
-                  <div className="benefit-block_one-color" />
-                  <div className="benefit-block_one-icon flaticon-high-speed" />
-                  <h4 className="benefit-block_one-heading">
-                    <a href="service-detail.html">
-                      Ultra Fast <br /> Connect
-                    </a>
-                  </h4>
-                </div>
-              </div>
-              {/* Benefit Block One */}
-              <div className="benefit-block_one col-lg-3 col-md-6 col-sm-6">
-                <div className="benefit-block_one-inner">
-                  <div
-                    className="benefit-block_one-pattern"
-                    style={{
-                      backgroundImage:
-                        "url(images/background/benefit-block_pattern.png)",
-                    }}
-                  />
-                  <div className="benefit-block_one-color" />
-                  <div className="benefit-block_one-icon flaticon-smart-tv" />
-                  <h4 className="benefit-block_one-heading">
-                    <a href="service-detail.html">
-                      4K and <br /> 8K Quality
-                    </a>
-                  </h4>
-                </div>
-              </div>
-              {/* Benefit Block One */}
-              <div className="benefit-block_one col-lg-3 col-md-6 col-sm-6">
-                <div className="benefit-block_one-inner">
-                  <div
-                    className="benefit-block_one-pattern"
-                    style={{
-                      backgroundImage:
-                        "url(images/background/benefit-block_pattern.png)",
-                    }}
-                  />
-                  <div className="benefit-block_one-color" />
-                  <div className="benefit-block_one-icon flaticon-technical-support" />
-                  <h4 className="benefit-block_one-heading">
-                    <a href="service-detail.html">
-                      Great Fast <br /> Support 24/7
-                    </a>
-                  </h4>
-                </div>
-              </div>
-            </div>
+            <TermsTabs />
           </div>
         </section>
         {/* End Benefit One */}
