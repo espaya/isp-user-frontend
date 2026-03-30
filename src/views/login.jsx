@@ -18,10 +18,10 @@ export default function Login() {
     }
 
     // Force HTTP if browser landed on HTTPS
-    if (window.location.protocol === "https:") {
-      window.location.replace(window.location.href.replace("https:", "http:"));
-      return;
-    }
+    // if (window.location.protocol === "https:") {
+    //   window.location.replace(window.location.href.replace("https:", "http:"));
+    //   return;
+    // }
 
     
   }, []);
