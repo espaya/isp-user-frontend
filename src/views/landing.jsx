@@ -164,7 +164,7 @@ export default function Landing() {
                             <i className="fa fa-phone" />
                           </div>
                           Give us a call <br />
-                          <a href="tel:+123-4567-890">+233 (0)54 283 3341</a>
+                          <a href="tel:+233-54-283-3341">+233 (0)54 283 3341</a>
                         </div>
                       </div>
                     </div>
