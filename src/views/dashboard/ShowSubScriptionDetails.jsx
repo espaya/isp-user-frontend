@@ -18,6 +18,15 @@ export default function ShowSubscriptionDetails() {
   useEffect(() => {
     async function fetchSubscription() {
       try {
+        console.log(
+          "Fetching subscription with token:",
+          token ? "Token exists" : "No token",
+        );
+        console.log(
+          "API URL:",
+          `${apiBase}/api/subscriptions/by-reference/${reference}`,
+        );
+
         const res = await fetch(
           `${apiBase}/api/subscriptions/by-reference/${reference}`,
           {
@@ -30,22 +39,46 @@ export default function ShowSubscriptionDetails() {
           },
         );
 
+        console.log("Response status:", res.status);
+        console.log("Response redirect URL:", res.url);
+
+        // Check if we were redirected
+        if (res.redirected) {
+          console.error("Request was redirected to:", res.url);
+          setError("Authentication failed. Please login again.");
+          // Redirect to login
+          logout();
+          return;
+        }
+
         const json = await res.json();
+        console.log("Response data:", json);
 
         if (!res.ok) {
-          setError(json.message || "Failed to fetch subscription");
+          if (res.status === 401 || res.status === 403) {
+            setError("Session expired. Please login again.");
+            logout();
+          } else {
+            setError(json.message || "Failed to fetch subscription");
+          }
         } else {
           setData(json);
         }
       } catch (err) {
-        setError("Network error");
+        console.error("Network error:", err);
+        setError("Network error: " + err.message);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchSubscription();
-  }, [trxref, reference]);
+    if (reference && token) {
+      fetchSubscription();
+    } else if (!token) {
+      setError("No authentication token found. Please login.");
+      setLoading(false);
+    }
+  }, [trxref, reference, token, logout, apiBase]);
 
   if (loading) {
     return (
