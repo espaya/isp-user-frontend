@@ -60,7 +60,7 @@ export const ROUTE_CONFIG = {
       },
       // Add this to your ROUTE_CONFIG object
       {
-        path: "/paystack/callback",
+        path: "paystack/callback",
         element: <ShowSubscriptionDetails />, // Reuse your subscription details component
       },
     ],
