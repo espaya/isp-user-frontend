@@ -42,6 +42,14 @@ export const ROUTE_CONFIG = {
   STATUS: { path: "status", element: <Status /> },
   INTERNET_SIGNOUT: { path: "/internet-signout", element: <InternetSignout /> },
 
+  // Add this to your ROUTE_CONFIG object
+  PAYSTACK_CALLBACK: {
+    path: "/paystack/callback",
+    name: "Paystack Callback",
+    isProtected: false,
+    element: <ShowSubscriptionDetails />, // Reuse your subscription details component
+  },
+
   // User dashboard routes
   DASHBOARD: {
     path: "/dashboard",
@@ -57,11 +65,6 @@ export const ROUTE_CONFIG = {
       {
         path: "payment/success/:reference",
         element: <ShowSubscriptionDetails />,
-      },
-      // Add this to your ROUTE_CONFIG object
-      {
-        path: "paystack/callback",
-        element: <ShowSubscriptionDetails />, // Reuse your subscription details component
       },
     ],
   },
