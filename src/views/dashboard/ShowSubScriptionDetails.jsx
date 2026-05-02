@@ -4,68 +4,32 @@ import formatDate from "../../utils/formatDate";
 import useLogout from "../../components/auth/logout";
 
 export default function ShowSubscriptionDetails() {
-  const { trxref, reference } = useParams();
-  const [searchParams] = useSearchParams(); // Add this for query params
-
+  const { reference: pathReference } = useParams();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const apiBase = import.meta.env.VITE_API_URL;
-
   const logout = useLogout();
   const token = localStorage.getItem("token");
 
-  // Helper function to extract reference string
-  const getReferenceString = () => {
-    // Try to get from reference param
-    let ref = reference;
-    
-    // If reference is an object (fix for [object Object])
-    if (ref && typeof ref === 'object') {
-      console.log('Reference is an object:', ref);
-      // Try to extract from common properties
-      ref = ref.reference || ref.trxref || ref.id || ref.toString();
-    }
-    
-    // If still not found, try trxref
-    if (!ref || ref === '[object Object]') {
-      ref = trxref;
-      if (ref && typeof ref === 'object') {
-        ref = ref.reference || ref.trxref || ref.id || ref.toString();
-      }
-    }
-    
-    // If still not found, try query parameters
-    if (!ref || ref === '[object Object]') {
-      ref = searchParams.get('reference') || searchParams.get('trxref');
-    }
-    
-    // Final validation
-    if (!ref || ref === '[object Object]') {
-      console.error('Could not extract reference from:', { reference, trxref });
-      return null;
-    }
-    
-    console.log('Extracted reference:', ref);
-    return String(ref);
-  };
-
   useEffect(() => {
     async function fetchSubscription() {
-      const referenceString = getReferenceString();
-      
-      if (!referenceString) {
-        setError("Invalid subscription reference");
+      // Get reference from either path param or query param
+      let reference = pathReference;
+      if (!reference) {
+        reference = searchParams.get('reference') || searchParams.get('trxref');
+      }
+
+      if (!reference) {
+        setError("No subscription reference found");
         setLoading(false);
         return;
       }
 
       try {
-        console.log("Fetching subscription with token:", token ? "Token exists" : "No token");
-        console.log("API URL:", `${apiBase}/api/subscriptions/by-reference/${referenceString}`);
-
         const res = await fetch(
-          `${apiBase}/api/subscriptions/by-reference/${referenceString}`,
+          `${apiBase}/api/subscriptions/by-reference/${reference}`,
           {
             method: "GET",
             headers: {
@@ -76,19 +40,7 @@ export default function ShowSubscriptionDetails() {
           }
         );
 
-        console.log("Response status:", res.status);
-        console.log("Response redirect URL:", res.url);
-
-        // Check if we were redirected
-        if (res.redirected) {
-          console.error("Request was redirected to:", res.url);
-          setError("Authentication failed. Please login again.");
-          logout();
-          return;
-        }
-
         const json = await res.json();
-        console.log("Response data:", json);
 
         if (!res.ok) {
           if (res.status === 401 || res.status === 403) {
@@ -114,9 +66,9 @@ export default function ShowSubscriptionDetails() {
       setError("No authentication token found. Please login.");
       setLoading(false);
     }
-  }, [trxref, reference, searchParams, token, logout, apiBase]);
+  }, [pathReference, searchParams, token, logout, apiBase]);
 
-  // Rest of your component remains the same...
+  // ... rest of your component remains the same
   if (loading) {
     return (
       <div className="d-flex justify-content-center mt-5">
