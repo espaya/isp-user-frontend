@@ -48,7 +48,7 @@ export const ROUTE_CONFIG = {
   //   name: "Paystack Callback",
   //   isProtected: false,
   //   element: <ShowSubscriptionDetails />, // Reuse your subscription details component
-  // },
+  // }, 
 
   // User dashboard routes
   DASHBOARD: {
