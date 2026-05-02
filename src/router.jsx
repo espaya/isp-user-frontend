@@ -12,7 +12,7 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import ShowSubscriptionDetails from "./views/dashboard/ShowSubScriptionDetails";
 import Status from "./views/dashboard/Status";
 import InternetSignout from "./views/dashboard/InternetSignout";
-import NotFound from "./views/NotFound"; // Import the NotFound component
+import NotFound from "./views/NotFound";
 
 export const ROUTE_CONFIG = {
   LANDING: {
@@ -21,7 +21,6 @@ export const ROUTE_CONFIG = {
     isProtected: false,
     element: <Landing />,
   },
-
   LOGIN: {
     path: "/login",
     name: "Login Page",
@@ -32,18 +31,14 @@ export const ROUTE_CONFIG = {
       </GuestRoute>
     ),
   },
-
   SUBSCRIBE: {
     path: "/subscribe/:packageId",
     name: "Subscribe Page",
     isProtected: false,
     element: <Login />,
   },
-
   STATUS: { path: "status", element: <Status /> },
   INTERNET_SIGNOUT: { path: "/internet-signout", element: <InternetSignout /> },
-
-  // User dashboard routes
   DASHBOARD: {
     path: "/dashboard",
     name: "Dashboard Page",
@@ -55,40 +50,16 @@ export const ROUTE_CONFIG = {
       { path: "payments", element: <Payments /> },
       { path: "support", element: <Support /> },
       { path: "account", element: <Account /> },
-      {
-        path: "payment/success",
-        element: <ShowSubscriptionDetails />,
-      },
-      {
-        path: "payment/success/:reference",
-        element: <ShowSubscriptionDetails />,
-      },
+      { path: "payment/success", element: <ShowSubscriptionDetails /> },
+      { path: "payment/success/:reference", element: <ShowSubscriptionDetails /> },
     ],
   },
-
-  // Add a catch-all 404 route - MUST BE LAST
-  NOT_FOUND: {
-    path: "*",
-    name: "Not Found",
-    isProtected: false,
-    element: <NotFound />,
-  },
 };
 
-// Helper functions for route access
-export const getRoutePath = (routeName) => {
-  const route = Object.values(ROUTE_CONFIG).find((r) => r.name === routeName);
-  return route ? route.path : "/";
-};
-
-export const getRouteElement = (routeName) => {
-  const route = Object.values(ROUTE_CONFIG).find((r) => r.name === routeName);
-  return route ? route.element : <NotFound />;
-};
-
-// Create the router
-const router = createBrowserRouter(
-  Object.values(ROUTE_CONFIG).map(
+// Create the router with a catch-all 404 route at the end
+const router = createBrowserRouter([
+  // Map all routes from ROUTE_CONFIG
+  ...Object.values(ROUTE_CONFIG).map(
     ({ path, element, children, isProtected, isGuestOnly, roles = [] }) => ({
       path,
       element: isProtected ? (
@@ -99,13 +70,17 @@ const router = createBrowserRouter(
         element
       ),
       children,
-    }),
+    })
   ),
-);
+  // Add catch-all 404 route at the END
+  {
+    path: "*",
+    element: <NotFound />,
+  },
+]);
 
 export default router;
 
-// Path constants for direct usage
 export const PATHS = Object.fromEntries(
   Object.entries(ROUTE_CONFIG).map(([key, value]) => [key, value.path]),
 );
