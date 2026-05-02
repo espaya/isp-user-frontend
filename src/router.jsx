@@ -12,6 +12,7 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import ShowSubscriptionDetails from "./views/dashboard/ShowSubScriptionDetails";
 import Status from "./views/dashboard/Status";
 import InternetSignout from "./views/dashboard/InternetSignout";
+import NotFound from "./views/NotFound"; // Import the NotFound component
 
 export const ROUTE_CONFIG = {
   LANDING: {
@@ -42,20 +43,12 @@ export const ROUTE_CONFIG = {
   STATUS: { path: "status", element: <Status /> },
   INTERNET_SIGNOUT: { path: "/internet-signout", element: <InternetSignout /> },
 
-  // Add this to your ROUTE_CONFIG object
-  // PAYSTACK_CALLBACK: {
-  //   path: "/paystack/callback",
-  //   name: "Paystack Callback",
-  //   isProtected: false,
-  //   element: <ShowSubscriptionDetails />, // Reuse your subscription details component
-  // },
-
   // User dashboard routes
   DASHBOARD: {
     path: "/dashboard",
     name: "Dashboard Page",
-    isProtected: true, // use this flag
-    element: <DashboardLayout />, // NO ProtectedRoute here
+    isProtected: true,
+    element: <DashboardLayout />,
     children: [
       { index: true, element: <DashboardHome /> },
       { path: "package", element: <MyPackage /> },
@@ -71,6 +64,14 @@ export const ROUTE_CONFIG = {
         element: <ShowSubscriptionDetails />,
       },
     ],
+  },
+
+  // Add a catch-all 404 route - MUST BE LAST
+  NOT_FOUND: {
+    path: "*",
+    name: "Not Found",
+    isProtected: false,
+    element: <NotFound />,
   },
 };
 
@@ -97,7 +98,7 @@ const router = createBrowserRouter(
       ) : (
         element
       ),
-      children, // ✅ THIS WAS MISSING
+      children,
     }),
   ),
 );
