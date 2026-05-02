@@ -7,12 +7,13 @@ import { AuthContext } from "../auth/AuthContext";
 import Avatar from "../components/Avatar";
 
 export default function DashboardLayout() {
-  const location = useLocation(); // get current path
+  const location = useLocation();
   const logout = useLogout();
   const { user } = useContext(AuthContext);
   const apiBase = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
-  const [reference, setReference] = useState({});
+  const [hotspotData, setHotspotData] = useState(null);
+  const [loadingHotspot, setLoadingHotspot] = useState(false);
 
   document.title = "Dashboard - ISP Automated Payment System";
 
@@ -37,6 +38,9 @@ export default function DashboardLayout() {
 
   // get current internet/hotspot details
   const getHotspot = async () => {
+    if (!token) return;
+    
+    setLoadingHotspot(true);
     try {
       const res = await fetch(`${apiBase}/api/hotspot-info`, {
         method: "GET",
@@ -49,11 +53,18 @@ export default function DashboardLayout() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message);
+        console.error("Hotspot info error:", data.message);
+        setHotspotData(null);
+        return;
       }
 
-      setReference(data);
-    } catch (err) {}
+      setHotspotData(data);
+    } catch (err) {
+      console.error("Error fetching hotspot info:", err);
+      setHotspotData(null);
+    } finally {
+      setLoadingHotspot(false);
+    }
   };
 
   useEffect(() => {
@@ -120,12 +131,13 @@ export default function DashboardLayout() {
                     </li>
                   ))}
 
-                  {reference && (
+                  {/* Fixed: Only show if has_active_subscription is true and reference exists */}
+                  {hotspotData && hotspotData.has_active_subscription && hotspotData.reference && (
                     <li className="list-group-item decoration-none">
                       <NavLink
                         className="d-flex align-items-center btn btn-link text-start w-100 p-0"
-                        to={`/dashboard/payment/success/${reference}`}
-                        style={{ textDecoration: "none" }} // ✅ removes underline
+                        to={`/dashboard/payment/success/${hotspotData.reference}?reference=${hotspotData.reference}`}
+                        style={{ textDecoration: "none" }}
                       >
                         <i className="fas fa-globe text-info me-2"></i>
                         Internet
@@ -137,7 +149,7 @@ export default function DashboardLayout() {
                     <button
                       className="d-flex align-items-center btn btn-link text-start w-100 p-0"
                       onClick={logout}
-                      style={{ textDecoration: "none" }} // ✅ removes underline
+                      style={{ textDecoration: "none" }}
                     >
                       <i className="fas fa-sign-out-alt text-danger me-2"></i>
                       Logout
