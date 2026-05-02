@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import formatDate from "../../utils/formatDate";
 import useLogout from "../../components/auth/logout";
 
 export default function ShowSubscriptionDetails() {
   const { trxref, reference } = useParams();
+  const [searchParams] = useSearchParams(); // Add this for query params
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,23 +13,59 @@ export default function ShowSubscriptionDetails() {
   const apiBase = import.meta.env.VITE_API_URL;
 
   const logout = useLogout();
-
   const token = localStorage.getItem("token");
+
+  // Helper function to extract reference string
+  const getReferenceString = () => {
+    // Try to get from reference param
+    let ref = reference;
+    
+    // If reference is an object (fix for [object Object])
+    if (ref && typeof ref === 'object') {
+      console.log('Reference is an object:', ref);
+      // Try to extract from common properties
+      ref = ref.reference || ref.trxref || ref.id || ref.toString();
+    }
+    
+    // If still not found, try trxref
+    if (!ref || ref === '[object Object]') {
+      ref = trxref;
+      if (ref && typeof ref === 'object') {
+        ref = ref.reference || ref.trxref || ref.id || ref.toString();
+      }
+    }
+    
+    // If still not found, try query parameters
+    if (!ref || ref === '[object Object]') {
+      ref = searchParams.get('reference') || searchParams.get('trxref');
+    }
+    
+    // Final validation
+    if (!ref || ref === '[object Object]') {
+      console.error('Could not extract reference from:', { reference, trxref });
+      return null;
+    }
+    
+    console.log('Extracted reference:', ref);
+    return String(ref);
+  };
 
   useEffect(() => {
     async function fetchSubscription() {
+      const referenceString = getReferenceString();
+      
+      if (!referenceString) {
+        setError("Invalid subscription reference");
+        setLoading(false);
+        return;
+      }
+
       try {
-        console.log(
-          "Fetching subscription with token:",
-          token ? "Token exists" : "No token",
-        );
-        console.log(
-          "API URL:",
-          `${apiBase}/api/subscriptions/by-reference/${reference}`,
-        );
+        console.log("Fetching subscription with token:", token ? "Token exists" : "No token");
+        console.log("API URL:", `${apiBase}/api/subscriptions/by-reference/${referenceString}`);
 
         const res = await fetch(
-          `${apiBase}/api/subscriptions/by-reference/${reference}`,
+          `${apiBase}/api/subscriptions/by-reference/${referenceString}`,
           {
             method: "GET",
             headers: {
@@ -36,7 +73,7 @@ export default function ShowSubscriptionDetails() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
 
         console.log("Response status:", res.status);
@@ -46,7 +83,6 @@ export default function ShowSubscriptionDetails() {
         if (res.redirected) {
           console.error("Request was redirected to:", res.url);
           setError("Authentication failed. Please login again.");
-          // Redirect to login
           logout();
           return;
         }
@@ -72,14 +108,15 @@ export default function ShowSubscriptionDetails() {
       }
     }
 
-    if (reference && token) {
+    if (token) {
       fetchSubscription();
     } else if (!token) {
       setError("No authentication token found. Please login.");
       setLoading(false);
     }
-  }, [trxref, reference, token, logout, apiBase]);
+  }, [trxref, reference, searchParams, token, logout, apiBase]);
 
+  // Rest of your component remains the same...
   if (loading) {
     return (
       <div className="d-flex justify-content-center mt-5">
