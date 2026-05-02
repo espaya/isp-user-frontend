@@ -39,14 +39,8 @@ export default function DashboardLayout() {
   // get current internet/hotspot details
   const getHotspot = async () => {
     const token = localStorage.getItem("token");
-    console.log("Token exists:", !!token);
-    console.log(
-      "Token value:",
-      token ? token.substring(0, 20) + "..." : "null",
-    );
 
     if (!token) {
-      console.error("No token found in localStorage");
       return;
     }
 
@@ -60,9 +54,7 @@ export default function DashboardLayout() {
         },
       });
 
-      console.log("Response status:", res.status);
       const data = await res.json();
-      console.log("Response data:", data);
 
       if (!res.ok) {
         console.error("Hotspot info error:", data.message);
