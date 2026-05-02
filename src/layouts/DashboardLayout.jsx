@@ -38,8 +38,18 @@ export default function DashboardLayout() {
 
   // get current internet/hotspot details
   const getHotspot = async () => {
-    if (!token) return;
-    
+    const token = localStorage.getItem("token");
+    console.log("Token exists:", !!token);
+    console.log(
+      "Token value:",
+      token ? token.substring(0, 20) + "..." : "null",
+    );
+
+    if (!token) {
+      console.error("No token found in localStorage");
+      return;
+    }
+
     setLoadingHotspot(true);
     try {
       const res = await fetch(`${apiBase}/api/hotspot-info`, {
@@ -50,7 +60,9 @@ export default function DashboardLayout() {
         },
       });
 
+      console.log("Response status:", res.status);
       const data = await res.json();
+      console.log("Response data:", data);
 
       if (!res.ok) {
         console.error("Hotspot info error:", data.message);
@@ -132,18 +144,20 @@ export default function DashboardLayout() {
                   ))}
 
                   {/* Fixed: Only show if has_active_subscription is true and reference exists */}
-                  {hotspotData && hotspotData.has_active_subscription && hotspotData.reference && (
-                    <li className="list-group-item decoration-none">
-                      <NavLink
-                        className="d-flex align-items-center btn btn-link text-start w-100 p-0"
-                        to={`/dashboard/payment/success/${hotspotData.reference}?reference=${hotspotData.reference}`}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <i className="fas fa-globe text-info me-2"></i>
-                        Internet
-                      </NavLink>
-                    </li>
-                  )}
+                  {hotspotData &&
+                    hotspotData.has_active_subscription &&
+                    hotspotData.reference && (
+                      <li className="list-group-item decoration-none">
+                        <NavLink
+                          className="d-flex align-items-center btn btn-link text-start w-100 p-0"
+                          to={`/dashboard/payment/success/${hotspotData.reference}?reference=${hotspotData.reference}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <i className="fas fa-globe text-info me-2"></i>
+                          Internet
+                        </NavLink>
+                      </li>
+                    )}
 
                   <li className="list-group-item decoration-none">
                     <button
