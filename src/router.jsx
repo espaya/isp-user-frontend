@@ -43,12 +43,12 @@ export const ROUTE_CONFIG = {
   INTERNET_SIGNOUT: { path: "/internet-signout", element: <InternetSignout /> },
 
   // Add this to your ROUTE_CONFIG object
-  PAYSTACK_CALLBACK: {
-    path: "/paystack/callback",
-    name: "Paystack Callback",
-    isProtected: false,
-    element: <ShowSubscriptionDetails />, // Reuse your subscription details component
-  },
+  // PAYSTACK_CALLBACK: {
+  //   path: "/paystack/callback",
+  //   name: "Paystack Callback",
+  //   isProtected: false,
+  //   element: <ShowSubscriptionDetails />, // Reuse your subscription details component
+  // },
 
   // User dashboard routes
   DASHBOARD: {
