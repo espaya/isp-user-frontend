@@ -1,10 +1,22 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../auth/AuthContext";
 import { Link, NavLink } from "react-router-dom";
 
-
 export default function Header() {
   const { user } = useContext(AuthContext);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Handle body scroll lock
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <>
@@ -16,100 +28,49 @@ export default function Header() {
               <div className="logo-box d-flex align-items-center">
                 <div className="logo">
                   <Link to="/">
-                    <img width="18%" height="18%" src="/images/logo.png" alt="" title="" />
+                    <img
+                      width="18%"
+                      height="18%"
+                      src="/images/logo.png"
+                      alt=""
+                    />
                   </Link>
                 </div>
               </div>
+
+              {/* Desktop Menu */}
               <div className="nav-outer d-flex align-items-center">
-                {/* Main Menu */}
                 <nav className="main-menu show navbar-expand-md">
-                  <div className="navbar-header">
-                    <button
-                      className="navbar-toggler"
-                      type="button"
-                      data-toggle="collapse"
-                      data-target="#navbarSupportedContent"
-                      aria-controls="navbarSupportedContent"
-                      aria-expanded="false"
-                      aria-label="Toggle navigation"
-                    >
-                      <span className="icon-bar" />
-                      <span className="icon-bar" />
-                      <span className="icon-bar" />
-                    </button>
-                  </div>
                   <div
                     className="navbar-collapse scroll-nav collapse clearfix"
                     id="navbarSupportedContent"
                   >
                     <ul className="navigation clearfix">
-                      <li className="current">
-                        <NavLink
-                          to="/#home"
-                          className={({ isActive }) =>
-                            isActive ? "active" : ""
-                          }
-                        >
-                          Home
-                        </NavLink>
+                      <li>
+                        <NavLink to="/#home">Home</NavLink>
                       </li>
                       <li>
-                        <NavLink
-                          to="/#about"
-                          className={({ isActive }) =>
-                            isActive ? "active" : ""
-                          }
-                        >
-                          About us
-                        </NavLink>
+                        <NavLink to="/#about">About us</NavLink>
                       </li>
                       <li>
-                        <NavLink
-                          to="/#price"
-                          className={({ isActive }) =>
-                            isActive ? "active" : ""
-                          }
-                        >
-                          Price
-                        </NavLink>
+                        <NavLink to="/#price">Price</NavLink>
                       </li>
                       <li>
-                        <NavLink
-                          to="/#benefits"
-                          className={({ isActive }) =>
-                            isActive ? "active" : ""
-                          }
-                        >
-                          Benefits
-                        </NavLink>
+                        <NavLink to="/#benefits">Benefits</NavLink>
                       </li>
                       <li>
                         {user ? (
-                          <NavLink
-                            to="/dashboard"
-                            className={({ isActive }) =>
-                              isActive ? "active" : ""
-                            }
-                          >
-                            <i className="fas fa-user me-2"></i> Dashboard
-                          </NavLink>
+                          <NavLink to="/dashboard">Dashboard</NavLink>
                         ) : (
-                          <NavLink
-                            to="/login"
-                            className={({ isActive }) =>
-                              isActive ? "active" : ""
-                            }
-                          >
-                            Login / Register
-                          </NavLink>
+                          <NavLink to="/login">Login / Register</NavLink>
                         )}
                       </li>
                     </ul>
                   </div>
                 </nav>
-                {/* Main Menu End*/}
               </div>
-              {/* Outer Box */}
+
+              {/* Right Side */}
               <div className="outer-box d-flex align-items-center">
                 <div className="header-phone_box">
                   <div className="header-phone_box-inner">
@@ -118,38 +79,209 @@ export default function Header() {
                     <a href="tel:+233542833341">+233542833341</a>
                   </div>
                 </div>
-                {/* Mobile Navigation Toggler */}
-                <div className="mobile-nav-toggler">
+
+                {/* Mobile Toggle Button */}
+                <div
+                  className="mobile-nav-toggler"
+                  onClick={() => setMobileMenuOpen(true)}
+                >
                   <span className="icon">
                     <img src="/images/icons/menu.png" alt="" />
                   </span>
                 </div>
               </div>
-              {/* End Outer Box */}
             </div>
           </div>
         </div>
-        {/* End Header Lower */}
-        {/* Mobile Menu  */}
-        <div className="mobile-menu">
-          <div className="menu-backdrop" />
-          <div className="close-btn">
-            <span className="icon far fa-times fa-fw" />
-          </div>
-          <nav className="menu-box">
-            <div className="nav-logo">
-              <Link to="/">
-                <img src="images/logo.png" alt="" title="" />
-              </Link>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <>
+            <div
+              className="mobile-menu-backdrop"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <div className="mobile-menu-panel">
+              <div
+                className="close-btn"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="icon far fa-times fa-fw">✕</span>
+              </div>
+              <div className="nav-logo">
+                <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+                  <img src="/images/logo.png" alt="" />
+                </Link>
+              </div>
+              <div className="menu-outer">
+                <ul className="navigation">
+                  <li>
+                    <NavLink
+                      to="/#home"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Home
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/#about"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      About us
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/#price"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Price
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/#benefits"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Benefits
+                    </NavLink>
+                  </li>
+                  <li>
+                    {user ? (
+                      <NavLink
+                        to="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Dashboard
+                      </NavLink>
+                    ) : (
+                      <NavLink
+                        to="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Login / Register
+                      </NavLink>
+                    )}
+                  </li>
+                </ul>
+              </div>
             </div>
-            {/* Search */}
-            <div className="menu-outer">
-              {/*Here Menu Will Come Automatically Via Javascript / Same Menu as in Header*/}
-            </div>
-          </nav>
-        </div>
-        {/* End Mobile Menu */}
+          </>
+        )}
       </header>
+
+      <style>{`
+        /* Mobile Menu Styles */
+        .mobile-menu-backdrop {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.6);
+          z-index: 99998;
+          animation: fadeIn 0.3s ease;
+        }
+
+        .mobile-menu-panel {
+          position: fixed;
+          top: 0;
+          right: 0;
+          width: 85%;
+          max-width: 320px;
+          height: 100%;
+          background: #ffffff;
+          z-index: 99999;
+          overflow-y: auto;
+          animation: slideIn 0.3s ease;
+          box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        .close-btn {
+          position: absolute;
+          right: 20px;
+          top: 20px;
+          cursor: pointer;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+          z-index: 10;
+        }
+
+        .nav-logo {
+          padding: 30px 20px;
+          border-bottom: 1px solid #eee;
+          margin-bottom: 20px;
+          text-align: center;
+        }
+
+        .nav-logo img {
+          max-width: 150px;
+        }
+
+        .menu-outer {
+          padding: 0 20px;
+        }
+
+        .menu-outer .navigation {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .menu-outer .navigation li {
+          margin-bottom: 15px;
+        }
+
+        .menu-outer .navigation li a {
+          color: #333;
+          text-decoration: none;
+          font-size: 18px;
+          display: block;
+          padding: 10px 0;
+          transition: color 0.3s;
+        }
+
+        .menu-outer .navigation li a:hover,
+        .menu-outer .navigation li a.active {
+          color: #007bff;
+        }
+
+        /* Desktop Styles */
+        @media only screen and (min-width: 992px) {
+          .mobile-nav-toggler {
+            display: none !important;
+          }
+        }
+
+        /* Mobile Toggle Button */
+        .mobile-nav-toggler {
+          cursor: pointer;
+          display: block;
+        }
+      `}</style>
     </>
   );
 }
