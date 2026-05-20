@@ -25,7 +25,7 @@ const validateStep = (step, method, details, setErrors) => {
     }
 
     if (method === "mobile_money") {
-      if (!details.name) newErrors.name = "Your name is required";
+      // if (!details.name) newErrors.name = "Your name is required";
 
       if (!details.phone || details.phone.length < 9)
         newErrors.phone = "Valid mobile number is required";
