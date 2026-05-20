@@ -24,10 +24,10 @@ export default function RenderReview({ details, pkg, method }) {
       <div className="border border-light rounded-2 overflow-hidden">
         <div className="divide-y">
           {/* Name */}
-          <div className="d-flex justify-content-between p-2">
+          {/* <div className="d-flex justify-content-between p-2">
             <span className="text-muted small">Name</span>
             <span className="fw-semibold small">{details.name}</span>
-          </div>
+          </div> */}
 
           {/* Mobile Money */}
           {details.payment_method?.trim().toLowerCase() === "mobile_money" && (

@@ -100,7 +100,7 @@ const renderDetailsForm = (method, details, setDetails, errors) => {
           Payment prompt will be sent to your phone
         </span>
       </div>
-
+{/* 
       <div>
         <label className="form-label small fw-medium text-dark mb-1">
           Name
@@ -113,7 +113,7 @@ const renderDetailsForm = (method, details, setDetails, errors) => {
           onChange={(e) => setDetails({ ...details, name: e.target.value })}
         />
         {errors?.name && <small className="text-danger">{errors.name}</small>}
-      </div>
+      </div> */}
 
       <div>
         <label className="form-label small fw-medium text-dark mb-1">

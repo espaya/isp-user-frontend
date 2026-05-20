@@ -42,7 +42,7 @@ export default function PaymentModal({
     onConfirm({
       payment_method: method, // <- must match back-end
       phone: details.phone,
-      name: details.name,
+      name: details?.name || "",
       email: details.email,
       card_number: details.cardNumber,
       expiry: details.expiry,
