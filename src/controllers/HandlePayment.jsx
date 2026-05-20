@@ -1,5 +1,5 @@
 const handlePaymentSuccess = async (
-  { payment_method, phone, name, email, card_number, expiry, cvv, provider }, // payment info from modal
+  { payment_method, phone, name, email, card_number, expiry, cvv, provider },
   {
     setLoading,
     setErrors,
@@ -26,10 +26,10 @@ const handlePaymentSuccess = async (
       },
       body: JSON.stringify({
         package_id: selectedPackage.id,
-        payment_method, // send method to backend
-        phone, // for mobile money payments
-        name, // for both card and mobile money payments
-        email, // for mobile money payment
+        payment_method,
+        phone,
+        name,
+        email,
         card_number,
         expiry,
         cvv,
@@ -39,104 +39,137 @@ const handlePaymentSuccess = async (
 
     const initData = await initRes.json();
 
-    if (!initRes.ok)
+    if (!initRes.ok) {
       throw new Error(initData.message || "Payment initialization failed");
-
-    // 2️⃣ Open Paystack Checkout for card payments
-    if (payment_method === "card") {
-      if (payment_method === "card") {
-        if (!initData.authorization_url) {
-          throw new Error("Paystack authorization URL missing");
-        }
-
-        // Redirect user to Paystack
-        // window.location.href = `/payment/success/${reference}/${reference}`;
-        window.location.href = initData.authorization_url;
-        return;
-      }
-    } else {
-      // For Mobile Money (MTN/Telecel) just verify the payment
-      await verifyPayment(initData.reference);
     }
 
-    // 3️⃣ Payment verification
-    // async function verifyPayment(reference) {
-    //   const verifyRes = await fetch(
-    //     `${apiBase}/api/paystack/verify/${reference}`,
-    //     {
-    //       method: "GET",
-    //       headers: {
-    //         Accept: "application/json",
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     },
-    //   );
+    // 2️⃣ Handle Card Payment - Redirect to Paystack
+    if (payment_method === "card") {
+      if (!initData.authorization_url) {
+        throw new Error("Paystack authorization URL missing");
+      }
+      window.location.href = initData.authorization_url;
+      return;
+    }
 
-    //   const data = await verifyRes.json();
+    // 3️⃣ Handle Mobile Money - Show instructions and poll for status
+    if (payment_method === "mobile_money") {
+      // Show instructions to user
+      const result = await Swal.fire({
+        title: "Check Your Phone",
+        html: `
+          <p>${initData.display_text || "A payment request has been sent to your phone."}</p>
+          <p class="text-danger mt-3"><strong>Do NOT close this page</strong> until you complete the payment.</p>
+          <p>Please check your phone and enter your PIN to authorize the payment.</p>
+        `,
+        icon: "info",
+        confirmButtonText: "I have completed the payment",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+      });
 
-    //   if (!verifyRes.ok)
-    //     throw new Error(data.message || "Payment verification failed");
+      if (result.isConfirmed) {
+        // User clicked "I have completed the payment" - now verify
+        await verifyPayment(initData.reference, true);
+      } else {
+        // User cancelled
+        setLoading(false);
+        setShowPaymentModal(false);
+      }
+    }
 
-    //   // get the current payment plan in the db
-    //   setCurrentPackage({
-    //     ...selectedPackage,
-    //     expires: selectedPackage.name.includes("Daily")
-    //       ? "Today 11:59 PM"
-    //       : selectedPackage.name.includes("Weekly")
-    //         ? "This Week"
-    //         : selectedPackage.name.includes("Monthly")
-    //           ? "This Month"
-    //           : "This month",
-    //   });
-
-    //   setShowPaymentModal(false);
-    //   setSelectedPackage(null);
-
-    //   Swal.fire({
-    //     icon: "success",
-    //     title: "Subscription Successful",
-    //     text: "Package Subscribed Successfully",
-    //     showCloseButton: true,
-    //   }).then(() => {
-    //     window.location.href = `/payment/success/${reference}/${reference}`;
-    //   });
-    // }
-
-    async function verifyPayment(reference) {
-      const verifyRes = await fetch(
-        `${apiBase}/api/paystack/verify/${reference}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
+    // 4️⃣ Payment verification function with polling
+    async function verifyPayment(reference, showLoading = false) {
+      if (showLoading) {
+        Swal.fire({
+          title: "Verifying Payment",
+          text: "Please wait while we confirm your payment...",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
           },
-        },
-      );
-
-      const data = await verifyRes.json();
-
-      if (!verifyRes.ok) {
-        Swal.fire({ icon: "error", title: "Error", text: data.message });
-        return;
+        });
       }
 
-      setCurrentPackage(selectedPackage);
-      setShowPaymentModal(false);
-      setSelectedPackage(null);
+      // Poll for payment status (check every 3 seconds, up to 20 times = 60 seconds)
+      let attempts = 0;
+      const maxAttempts = 20;
 
-      Swal.fire({
-        icon: "success",
-        title: "Subscription Successful",
-        text: "Package Subscribed Successfully",
-      }).then(() => {
-        window.location.href = `/dashboard/payment/success/${reference}`;
-      });
+      const checkStatus = async () => {
+        attempts++;
+
+        const verifyRes = await fetch(
+          `${apiBase}/api/paystack/verify/${reference}`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const data = await verifyRes.json();
+
+        if (verifyRes.ok && data.subscription) {
+          // Payment successful
+          Swal.close();
+          setCurrentPackage(selectedPackage);
+          setShowPaymentModal(false);
+          setSelectedPackage(null);
+
+          await Swal.fire({
+            icon: "success",
+            title: "Subscription Successful!",
+            text: "Your package has been activated successfully.",
+            confirmButtonText: "OK",
+          });
+
+          window.location.href = `/dashboard/payment/success/${reference}`;
+          return true;
+        }
+
+        // Check if payment is still pending or abandoned
+        if (data.status === "pending" || data.status === "abandoned") {
+          if (attempts < maxAttempts) {
+            // Still waiting, check again in 3 seconds
+            setTimeout(checkStatus, 3000);
+            return false;
+          } else {
+            // Timeout
+            Swal.fire({
+              icon: "error",
+              title: "Payment Timeout",
+              text: "Payment not completed within the expected time. Please check your transaction status or contact support.",
+              confirmButtonText: "OK",
+            });
+            setLoading(false);
+            return false;
+          }
+        }
+
+        // Payment failed
+        Swal.fire({
+          icon: "error",
+          title: "Payment Failed",
+          text:
+            data.message || "Payment verification failed. Please try again.",
+        });
+        setLoading(false);
+        return false;
+      };
+
+      await checkStatus();
     }
   } catch (err) {
     Swal.fire("Error", err.message, "error");
-  } finally {
     setLoading(false);
+  } finally {
+    if (payment_method !== "mobile_money") {
+      setLoading(false);
+    }
   }
 };
 
