@@ -30,8 +30,8 @@ const validateStep = (step, method, details, setErrors) => {
       if (!details.phone || details.phone.length < 9)
         newErrors.phone = "Valid mobile number is required";
 
-      if (!details.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email))
-        newErrors.email = "Valid email address is required";
+      // if (!details.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email))
+      //   newErrors.email = "Valid email address is required";
 
       if (!details.provider)
         newErrors.provider = "Mobile money provider is required";

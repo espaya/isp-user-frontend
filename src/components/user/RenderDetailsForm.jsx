@@ -148,7 +148,7 @@ const renderDetailsForm = (method, details, setDetails, errors) => {
         )}
       </div>
 
-      <div>
+      {/* <div>
         <label className="form-label small fw-medium text-dark mb-1">
           Email
         </label>
@@ -160,7 +160,7 @@ const renderDetailsForm = (method, details, setDetails, errors) => {
           onChange={(e) => setDetails({ ...details, email: e.target.value })}
         />
         {errors?.email && <small className="text-danger">{errors.email}</small>}
-      </div>
+      </div> */}
     </div>
   );
 };

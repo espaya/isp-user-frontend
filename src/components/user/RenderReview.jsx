@@ -37,10 +37,10 @@ export default function RenderReview({ details, pkg, method }) {
                 <span className="fw-semibold small">{details.phone}</span>
               </div>
 
-              <div className="d-flex justify-content-between p-2">
+              {/* <div className="d-flex justify-content-between p-2">
                 <span className="text-muted small">Email</span>
                 <span className="fw-semibold small">{details.email}</span>
-              </div>
+              </div> */}
 
               <div className="d-flex justify-content-between p-2">
                 <span className="text-muted small">Provider</span>
