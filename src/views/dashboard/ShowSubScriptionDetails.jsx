@@ -19,6 +19,8 @@ export default function ShowSubscriptionDetails() {
       reference = searchParams.get("reference") || searchParams.get("trxref");
     }
 
+    console.log(`Payment Reference: ${reference}`);
+
     if (!reference) {
       setError("No subscription reference found");
       setLoading(false);
