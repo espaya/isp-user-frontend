@@ -14,65 +14,96 @@ export default function ShowSubscriptionDetails() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    async function fetchSubscription() {
-      // Get reference from either path param or query param
-      let reference = pathReference;
-      if (!reference) {
-        reference = searchParams.get('reference') || searchParams.get('trxref');
-      }
+    let reference = pathReference;
+    if (!reference) {
+      reference = searchParams.get("reference") || searchParams.get("trxref");
+    }
 
-      if (!reference) {
-        setError("No subscription reference found");
-        setLoading(false);
-        return;
-      }
+    if (!reference) {
+      setError("No subscription reference found");
+      setLoading(false);
+      return;
+    }
 
+    let attempts = 0;
+    const maxAttempts = 30;
+
+    const fetchSubscription = async () => {
       try {
         const res = await fetch(
           `${apiBase}/api/subscriptions/by-reference/${reference}`,
           {
-            method: "GET",
             headers: {
               Accept: "application/json",
-              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         const json = await res.json();
 
-        if (!res.ok) {
-          if (res.status === 401 || res.status === 403) {
-            setError("Session expired. Please login again.");
-            logout();
+        if (res.ok && json.subscription) {
+          setData(json);
+          setLoading(false);
+          return true;
+        }
+
+        // Check payment status if subscription not found
+        const statusRes = await fetch(
+          `${apiBase}/api/paystack/status/${reference}`,
+        );
+        const statusData = await statusRes.json();
+
+        if (statusData.payment_status === "success") {
+          // Retry fetching subscription
+          if (attempts < maxAttempts) {
+            attempts++;
+            setTimeout(fetchSubscription, 2000);
           } else {
-            setError(json.message || "Failed to fetch subscription");
+            setError(
+              "Payment confirmed but subscription activation delayed. Please contact support.",
+            );
+            setLoading(false);
+          }
+        } else if (statusData.payment_status === "pending") {
+          if (attempts < maxAttempts) {
+            attempts++;
+            setTimeout(fetchSubscription, 2000);
+          } else {
+            setError(
+              "Payment still pending. Please check your email for confirmation.",
+            );
+            setLoading(false);
           }
         } else {
-          setData(json);
+          setError(json.message || "Failed to fetch subscription");
+          setLoading(false);
         }
       } catch (err) {
-        console.error("Network error:", err);
-        setError("Network error: " + err.message);
-      } finally {
-        setLoading(false);
+        console.error("Error:", err);
+        if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(fetchSubscription, 2000);
+        } else {
+          setError("Network error. Please refresh the page.");
+          setLoading(false);
+        }
       }
-    }
+    };
 
     if (token) {
       fetchSubscription();
-    } else if (!token) {
-      setError("No authentication token found. Please login.");
+    } else {
+      setError("Please login to view your subscription.");
       setLoading(false);
     }
-  }, [pathReference, searchParams, token, logout, apiBase]);
+  }, [pathReference, searchParams, token, apiBase]);
 
-  // ... rest of your component remains the same
   if (loading) {
     return (
       <div className="d-flex justify-content-center mt-5">
         <div className="spinner-border text-primary" />
+        <p className="ms-3">Verifying your payment...</p>
       </div>
     );
   }
@@ -91,50 +122,32 @@ export default function ShowSubscriptionDetails() {
             <div className="card-header bg-success text-white">
               <h5 className="mb-0">Subscription Activated 🎉</h5>
             </div>
-
             <div className="card-body">
               <p>
                 <strong>Device:</strong> {data.device ?? "N/A"}
               </p>
-
               <p>
                 <strong>Status:</strong>{" "}
                 <span className="badge bg-success">
                   {data.subscription.status}
                 </span>
               </p>
-
               <p>
                 <strong>Starts At:</strong>
                 <br />
                 {formatDate(data.subscription.starts_at, true)}
               </p>
-
               <p>
                 <strong>Expires At:</strong>
                 <br />
                 {formatDate(data.subscription.expires_at, true)}
               </p>
-
-              <p>
-                <strong>Internet Login Link:</strong>
-                <br />
-                <small>
-                  Use your email and the password below to access internet
-                </small>
-                <br />
-                <a onClick={logout} href="#">
-                  Internet Login
-                </a>
-              </p>
-
               <div className="alert alert-info mt-3">
                 <strong>Internet Password:</strong>
                 <h4 className="mt-2 mb-0 text-center">
                   {data.hotspot_password}
                 </h4>
               </div>
-
               <p className="text-muted small text-center">
                 Use this password to connect. It will stop working automatically
                 when your subscription expires.
