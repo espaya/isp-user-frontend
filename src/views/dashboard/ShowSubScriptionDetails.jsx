@@ -13,15 +13,28 @@ export default function ShowSubscriptionDetails() {
   const logout = useLogout();
   const token = localStorage.getItem("token");
 
+  // Debug logging at component start
+  console.log("=== ShowSubscriptionDetails Component Mounted ===");
+  console.log("Path Reference:", pathReference);
+  console.log("All URL Params:", useParams());
+  console.log("Search Params Object:", Object.fromEntries([...searchParams]));
+  console.log("Token exists:", !!token);
+  console.log("API Base:", apiBase);
+
   useEffect(() => {
+    console.log("=== useEffect RUNNING ===");
+    
     let reference = pathReference;
     if (!reference) {
       reference = searchParams.get("reference") || searchParams.get("trxref");
     }
 
-    console.log(`Payment Reference: ${reference}`);
+    console.log("Final Reference Value:", reference);
+    console.log("Reference type:", typeof reference);
+    console.log("Reference length:", reference?.length);
 
     if (!reference) {
+      console.error("No reference found in URL!");
       setError("No subscription reference found");
       setLoading(false);
       return;
@@ -31,50 +44,57 @@ export default function ShowSubscriptionDetails() {
     const maxAttempts = 30;
 
     const fetchSubscription = async () => {
+      console.log(`Attempt ${attempts + 1}: Fetching subscription for reference: ${reference}`);
+      
       try {
-        const res = await fetch(
-          `${apiBase}/api/subscriptions/by-reference/${reference}`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+        const url = `${apiBase}/api/subscriptions/by-reference/${reference}`;
+        console.log("Fetching URL:", url);
+        
+        const res = await fetch(url, {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
+        console.log("Response status:", res.status);
+        console.log("Response OK:", res.ok);
+        console.log("Response redirected:", res.redirected);
+        
         const json = await res.json();
+        console.log("Response data:", json);
 
         if (res.ok && json.subscription) {
+          console.log("Subscription found! Setting data...");
           setData(json);
           setLoading(false);
           return true;
         }
 
         // Check payment status if subscription not found
-        const statusRes = await fetch(
-          `${apiBase}/api/paystack/status/${reference}`,
-        );
+        const statusUrl = `${apiBase}/api/paystack/status/${reference}`;
+        console.log("Checking payment status at:", statusUrl);
+        
+        const statusRes = await fetch(statusUrl);
         const statusData = await statusRes.json();
+        console.log("Payment status response:", statusData);
 
         if (statusData.payment_status === "success") {
-          // Retry fetching subscription
           if (attempts < maxAttempts) {
             attempts++;
+            console.log(`Payment success but subscription not ready. Retry ${attempts}/${maxAttempts}`);
             setTimeout(fetchSubscription, 2000);
           } else {
-            setError(
-              "Payment confirmed but subscription activation delayed. Please contact support.",
-            );
+            setError("Payment confirmed but subscription activation delayed. Please contact support.");
             setLoading(false);
           }
         } else if (statusData.payment_status === "pending") {
           if (attempts < maxAttempts) {
             attempts++;
+            console.log(`Payment pending. Retry ${attempts}/${maxAttempts}`);
             setTimeout(fetchSubscription, 2000);
           } else {
-            setError(
-              "Payment still pending. Please check your email for confirmation.",
-            );
+            setError("Payment still pending. Please check your email for confirmation.");
             setLoading(false);
           }
         } else {
@@ -82,9 +102,10 @@ export default function ShowSubscriptionDetails() {
           setLoading(false);
         }
       } catch (err) {
-        console.error("Error:", err);
+        console.error("Fetch error:", err);
         if (attempts < maxAttempts) {
           attempts++;
+          console.log(`Error, retrying ${attempts}/${maxAttempts}`);
           setTimeout(fetchSubscription, 2000);
         } else {
           setError("Network error. Please refresh the page.");
@@ -94,12 +115,16 @@ export default function ShowSubscriptionDetails() {
     };
 
     if (token) {
+      console.log("Token present, starting fetchSubscription");
       fetchSubscription();
     } else {
+      console.error("No token found in localStorage");
       setError("Please login to view your subscription.");
       setLoading(false);
     }
   }, [pathReference, searchParams, token, apiBase]);
+
+  console.log("Component render state:", { loading, error: !!error, hasData: !!data });
 
   if (loading) {
     return (
