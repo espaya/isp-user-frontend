@@ -14,7 +14,6 @@ export default function ShowSubscriptionDetails() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    
     let reference = pathReference;
     if (!reference) {
       reference = searchParams.get("reference") || searchParams.get("trxref");
@@ -30,17 +29,16 @@ export default function ShowSubscriptionDetails() {
     const maxAttempts = 5;
 
     const fetchSubscription = async () => {
-      
       try {
         const url = `${apiBase}/api/subscriptions/by-reference/${reference}`;
-        
+
         const res = await fetch(url, {
           headers: {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
-        
+
         const json = await res.json();
 
         if (res.ok && json.subscription) {
@@ -51,7 +49,7 @@ export default function ShowSubscriptionDetails() {
 
         // Check payment status if subscription not found
         const statusUrl = `${apiBase}/api/paystack/status/${reference}`;
-        
+
         const statusRes = await fetch(statusUrl);
         const statusData = await statusRes.json();
 
@@ -60,7 +58,9 @@ export default function ShowSubscriptionDetails() {
             attempts++;
             setTimeout(fetchSubscription, 2000);
           } else {
-            setError("Payment confirmed but subscription activation delayed. Please contact support.");
+            setError(
+              "Payment confirmed but subscription activation delayed. Please contact support.",
+            );
             setLoading(false);
           }
         } else if (statusData.payment_status === "pending") {
@@ -68,7 +68,9 @@ export default function ShowSubscriptionDetails() {
             attempts++;
             setTimeout(fetchSubscription, 2000);
           } else {
-            setError("Payment still pending. Please check your email for confirmation.");
+            setError(
+              "Payment still pending. Please check your email for confirmation.",
+            );
             setLoading(false);
           }
         } else {
@@ -94,7 +96,6 @@ export default function ShowSubscriptionDetails() {
     }
   }, [pathReference, searchParams, token, apiBase]);
 
-
   if (loading) {
     return (
       <div className="d-flex justify-content-center mt-5">
@@ -115,16 +116,24 @@ export default function ShowSubscriptionDetails() {
       <div className="row justify-content-center">
         <div className="col-md-6">
           <div className="card shadow">
-            <div className="card-header bg-success text-white">
-              <h5 className="mb-0">Subscription Activated 🎉</h5>
+            <div
+              className={`card-header ${data.subscription.status === "active" ? "bg-success" : "bg-danger"} text-white`}
+            >
+              <h5 className="mb-0">
+                {data.subscription.status === "active"
+                  ? "Subscription Activated 🎉"
+                  : "Subscription Expired"}
+              </h5>
             </div>
             <div className="card-body">
               <p>
                 <strong>Device:</strong> {data.device ?? "N/A"}
               </p>
               <p>
-                <strong>Status:</strong>{" "}
-                <span className="badge bg-success">
+                <strong>Status:</strong>
+                <span
+                  className={`badge ${data.subscription.status === "active" ? "bg-success" : "bg-danger"}`}
+                >
                   {data.subscription.status}
                 </span>
               </p>
@@ -138,15 +147,16 @@ export default function ShowSubscriptionDetails() {
                 <br />
                 {formatDate(data.subscription.expires_at, true)}
               </p>
-              <div className="alert alert-info mt-3">
+              <div
+                className={`alert ${data.subscription.status === "active" ? "alert-info" : "alert-danger"} mt-3`}
+              >
                 <strong>Internet Password:</strong>
                 <h4 className="mt-2 mb-0 text-center">
                   {data.hotspot_password}
                 </h4>
               </div>
               <p className="text-muted small text-center">
-                Use this password to connect. It will stop working automatically
-                when your subscription expires.
+                Use this password to connect.
               </p>
             </div>
           </div>
