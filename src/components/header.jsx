@@ -80,13 +80,28 @@ export default function Header() {
                   </div>
                 </div>
 
-                {/* Mobile Toggle Button */}
+                {/* ✅ Mobile Toggle Button - LARGER and more visible */}
                 <div
                   className="mobile-nav-toggler"
                   onClick={() => setMobileMenuOpen(true)}
+                  style={{
+                    cursor: "pointer",
+                    display: "block",
+                    padding: "8px",
+                    minWidth: "44px",
+                    minHeight: "44px",
+                  }}
                 >
                   <span className="icon">
-                    <img src="/images/icons/menu.png" alt="" />
+                    <img
+                      src="/images/icons/menu.png"
+                      alt="Menu"
+                      style={{
+                        width: "28px",
+                        height: "28px",
+                        display: "block",
+                      }}
+                    />
                   </span>
                 </div>
               </div>
@@ -171,6 +186,126 @@ export default function Header() {
         )}
       </header>
 
+      {/* ✅ Add CSS to ensure mobile menu works properly */}
+      <style>
+        {`
+          /* Mobile Toggle Button - Desktop hide */
+          @media only screen and (min-width: 992px) {
+            .mobile-nav-toggler {
+              display: none !important;
+            }
+          }
+
+          /* Mobile Toggle Button - Mobile show with proper size */
+          @media only screen and (max-width: 991px) {
+            .mobile-nav-toggler {
+              display: block !important;
+              padding: 8px !important;
+            }
+            .mobile-nav-toggler .icon img {
+              width: 28px !important;
+              height: 28px !important;
+            }
+          }
+
+          /* Mobile Menu Styles */
+          .mobile-menu-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 99998;
+            animation: fadeIn 0.3s ease;
+          }
+
+          .mobile-menu-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 85%;
+            max-width: 320px;
+            height: 100%;
+            background: #ffffff;
+            z-index: 99999;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+          }
+
+          @keyframes slideIn {
+            from {
+              transform: translateX(100%);
+            }
+            to {
+              transform: translateX(0);
+            }
+          }
+
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
+
+          .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 10;
+          }
+
+          .nav-logo {
+            padding: 30px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+            text-align: center;
+          }
+
+          .nav-logo img {
+            max-width: 150px;
+          }
+
+          .menu-outer {
+            padding: 0 20px;
+          }
+
+          .menu-outer .navigation {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+
+          .menu-outer .navigation li {
+            margin-bottom: 15px;
+          }
+
+          .menu-outer .navigation li a {
+            color: #333;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px 0;
+            transition: color 0.3s;
+          }
+
+          .menu-outer .navigation li a:hover,
+          .menu-outer .navigation li a.active {
+            color: #007bff;
+          }
+        `}
+      </style>
     </>
   );
 }
