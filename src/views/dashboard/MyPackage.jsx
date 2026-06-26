@@ -57,7 +57,6 @@ export default function MyPackage() {
     return "Current";
   };
 
-
   useEffect(() => {
     CurrentPackage(setLoading, apiBase, setCurrentPackage, setErrors);
   }, []);
@@ -113,17 +112,18 @@ export default function MyPackage() {
                     {isCurrent ? "Current Plan" : actionLabel}
                   </span>
 
-                  <h6 className="fw-semibold">{pkg.name}</h6>
-                  <div className="fs-3 fw-bold mb-3">
+                  {/* ✅ Add text-dark class to force black text */}
+                  <h6 className="fw-semibold text-dark">{pkg.name}</h6>
+                  <div className="fs-3 fw-bold mb-3 text-dark">
                     GHS {parseInt(pkg.price, 10)}
                   </div>
 
-                  <ul className="list-unstyled small mb-4">
-                    <li>
+                  <ul className="list-unstyled small mb-4 text-dark">
+                    <li className="text-dark">
                       <i className="fas fa-tachometer-alt me-2 text-info" />{" "}
                       {pkg.speed}
                     </li>
-                    <li>
+                    <li className="text-dark">
                       <i className="fas fa-users me-2 text-success" />{" "}
                       {pkg.devices} device(s)
                     </li>
